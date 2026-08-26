@@ -868,10 +868,7 @@ document.addEventListener(
 );
 
 
-function makeNoteDraggable(
-    noteElement,
-    note
-) {
+function makeNoteDraggable(noteElement, note) {
 
     let isDragging = false;
 
@@ -880,46 +877,62 @@ function makeNoteDraggable(
 
 
     noteElement.addEventListener(
-        "mousedown",
+        "pointerdown",
         function(event) {
 
             if (
-                event.target.classList.contains(
-                    "sticky-note-content"
+                event.target.closest(
+                    ".sticky-note-content"
                 )
             ) {
                 return;
             }
 
             if (
-                event.target.classList.contains(
-                    "delete-note"
+                event.target.closest(
+                    ".delete-note"
                 )
             ) {
                 return;
             }
 
+
             isDragging = true;
 
+            noteElement.setPointerCapture(
+                event.pointerId
+            );
+
+
+            const rect =
+                noteElement.getBoundingClientRect();
+
+
             offsetX =
-                event.clientX -
-                noteElement.offsetLeft;
+                event.clientX - rect.left;
 
             offsetY =
-                event.clientY -
-                noteElement.offsetTop;
+                event.clientY - rect.top;
+
+
+            noteElement.style.zIndex = "200";
+
+            noteElement.classList.add(
+                "dragging"
+            );
 
         }
     );
 
 
-    document.addEventListener(
-        "mousemove",
+    noteElement.addEventListener(
+        "pointermove",
         function(event) {
 
             if (!isDragging) {
                 return;
             }
+
 
             const x =
                 event.clientX - offsetX;
@@ -937,18 +950,63 @@ function makeNoteDraggable(
 
             noteElement.style.top =
                 `${y}px`;
+
         }
     );
 
 
-    document.addEventListener(
-        "mouseup",
-        function() {
+    noteElement.addEventListener(
+        "pointerup",
+        function(event) {
+
+            if (!isDragging) {
+                return;
+            }
+
 
             isDragging = false;
 
+
+            noteElement.releasePointerCapture(
+                event.pointerId
+            );
+
+
+            noteElement.classList.remove(
+                "dragging"
+            );
+
         }
     );
+
+
+    noteElement.addEventListener(
+        "pointercancel",
+        function(event) {
+
+            isDragging = false;
+
+
+            if (
+                noteElement.hasPointerCapture(
+                    event.pointerId
+                )
+            ) {
+
+                noteElement.releasePointerCapture(
+                    event.pointerId
+                );
+
+            }
+
+
+            noteElement.classList.remove(
+                "dragging"
+            );
+
+        }
+    );
+
 }
 
 renderTasks();

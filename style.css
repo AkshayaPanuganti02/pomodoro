@@ -713,4 +713,238 @@ body {
 
     background: rgba(111, 159, 172, 0.12);
 }
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
 
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .app {
+        width: 100%;
+        min-height: 100vh;
+
+        padding: 80px 16px 30px;
+
+        gap: 24px;
+
+        justify-content: flex-start;
+    }
+
+
+    /* =========================
+       TOP CONTROLS
+    ========================= */
+
+    .ambience-button {
+        top: 15px;
+        right: 121px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+    .sticky-notes-button {
+        top: 15px;
+        right: 68px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+    .settings-button {
+        top: 15px;
+        right: 15px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+
+    /* =========================
+       TIMER
+    ========================= */
+
+    .timer-section {
+        width: 100%;
+        max-width: 500px;
+
+        padding: 32px 18px;
+
+        border-radius: 20px;
+    }
+
+    .session-type {
+        font-size: 13px;
+
+        letter-spacing: 3px;
+    }
+
+    .active-task {
+        max-width: 100%;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+
+        font-size: 16px;
+    }
+
+    .timer {
+        font-size: clamp(48px, 15vw, 64px);
+
+        margin-bottom: 20px;
+    }
+
+    .timer-controls {
+        flex-wrap: wrap;
+
+        justify-content: center;
+    }
+
+    .start-button,
+    .reset-button {
+        padding: 11px 22px;
+
+        font-size: 16px;
+    }
+
+
+    /* =========================
+       TASKS
+    ========================= */
+
+    .todo-section {
+        width: 100%;
+        max-width: 500px;
+
+        padding: 20px;
+
+        border-radius: 18px;
+    }
+
+    .todo-section h2 {
+        font-size: 21px;
+    }
+
+    .add-task-container {
+        width: 100%;
+    }
+
+    #taskInput {
+        min-width: 0;
+
+        width: 100%;
+    }
+
+    #addTaskButton {
+        white-space: nowrap;
+    }
+
+    .task {
+        width: 100%;
+
+        gap: 8px;
+    }
+
+    .task span {
+        min-width: 0;
+
+        flex: 1;
+
+        overflow-wrap: anywhere;
+    }
+
+
+    /* =========================
+       SETTINGS PANEL
+    ========================= */
+
+    .settings-panel {
+        top: 70px;
+
+        left: 15px;
+        right: 15px;
+
+        width: auto;
+
+        max-height: calc(100vh - 85px);
+
+        overflow-y: auto;
+
+        padding: 20px;
+    }
+
+
+    /* =========================
+       AMBIENCE PANEL
+    ========================= */
+
+    .ambience-panel {
+        top: 70px;
+
+        left: 15px;
+        right: 15px;
+
+        width: auto;
+
+        max-height: calc(100vh - 85px);
+
+        overflow-y: auto;
+
+        padding: 16px;
+    }
+
+    .ambience-list {
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+    .ambience-preview {
+        height: 90px;
+    }
+
+
+    /* =========================
+       STICKY NOTES
+    ========================= */
+
+    #stickyNotesContainer {
+        overflow: hidden;
+    }
+
+    .sticky-note {
+        width: min(220px, calc(100vw - 30px));
+
+        min-height: 170px;
+
+        padding: 12px;
+    }
+
+    .sticky-note-content {
+        min-height: 120px;
+
+        font-size: 15px;
+
+        resize: none;
+    }
+
+    .sticky-note-header {
+        min-height: 32px;
+
+        cursor: grab;
+
+        touch-action: none;
+    }
+
+    .sticky-note-header {
+    touch-action: none;
+}
+
+}
