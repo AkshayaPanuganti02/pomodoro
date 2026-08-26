@@ -667,3 +667,17 @@ body {
     transform: scale(1.03);
 }
 
+.no-ambience-preview {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.08);
+
+    font-size: 30px;
+}
+

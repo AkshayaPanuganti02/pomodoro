@@ -91,11 +91,19 @@ const timerState = {
 
 const ambiences = [
     {
+        id: "none",
+        name: "None",
+        type: "none",
+        source: null
+    },
+
+    {
         id: "rainy-room",
         name: "Rainy Room",
         type: "image",
         source: "assets/ambience/rainy-room.jpg"
     },
+
     {
         id: "forest",
         name: "Forest",
@@ -692,34 +700,41 @@ function renderAmbiences() {
             ambience.id;
 
         ambienceElement.innerHTML = `
-            <div class="ambience-preview">
+    <div class="ambience-preview">
 
-                ${
-                    ambience.type === "video"
-                    ?
-                    `<video
-                        src="${ambience.source}"
-                        muted
-                        loop
-                        autoplay
-                    ></video>`
-                    :
-                    `<img
-                        src="${ambience.source}"
-                        alt="${ambience.name}"
-                    >`
-                }
+        ${
+            ambience.type === "none"
+            ?
+            `<div class="no-ambience-preview">
+                🚫
+            </div>`
+            :
+            ambience.type === "video"
+            ?
+            `<video
+                src="${ambience.source}"
+                muted
+                loop
+                autoplay
+            ></video>`
+            :
+            `<img
+                src="${ambience.source}"
+                alt="${ambience.name}"
+            >`
+        }
 
-            </div>
+    </div>
 
-            <span>${ambience.name}</span>
-        `;
+    <span>${ambience.name}</span>
+`;
 
         ambienceList.appendChild(
             ambienceElement
         );
     });
 }
+
 
 ambienceList.addEventListener(
     "click",
@@ -747,8 +762,15 @@ function selectAmbience(ambienceId) {
         return;
     }
 
-    ambienceState.selectedAmbienceId =
-        ambience.id;
+    if (ambience.type === "none") {
+
+        ambienceState.selectedAmbienceId = null;
+
+    } else {
+
+        ambienceState.selectedAmbienceId =
+            ambience.id;
+    }
 
     renderAmbienceBackground();
 
@@ -759,6 +781,9 @@ function renderAmbienceBackground() {
 
     ambienceBackground.innerHTML = "";
 
+    ambienceBackground.style.backgroundImage =
+        "none";
+
     const ambience =
         ambiences.find(
             item =>
@@ -767,6 +792,10 @@ function renderAmbienceBackground() {
         );
 
     if (!ambience) {
+        return;
+    }
+
+    if (ambience.type === "none") {
         return;
     }
 
