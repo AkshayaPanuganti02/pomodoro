@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pomodoro</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <section class="timer-section">
+
+    <p class="session-type" id="sessionType">
+        FOCUS
+    </p>
+
+    <p
+    id="activeTask"
+    class="active-task"
+>
+</p>
+
+    <div class="timer" id="timer">
+        25:00
+    </div>
+
+    <div class="timer-controls">
+
+    <button id="startButton" class="start-button">
+        ▶ Start
+    </button>
+
+    <button id="resetButton" class="reset-button">
+        ↻ Reset
+    </button>
+
+</div>
+
+    <p class="session-count" id="sessionProgress">
+    Session 1 of 4
+</p>
+
+</section>
+
+
+        <section class="todo-section">
+
+    <h2>Today's Tasks</h2>
+
+    <div class="task-list" id="taskList">
+        <!-- Tasks will be created dynamically -->
+    </div>
+
+    <div class="add-task-container">
+
+        <input
+            type="text"
+            id="taskInput"
+            placeholder="What do you need to do?"
+        >
+
+        <button id="addTaskButton">
+            + Add task
+        </button>
+
+    </div>
+
+</section>
+
+<button
+    id="stickyNotesButton"
+    class="sticky-notes-button"
+    aria-label="Open sticky notes"
+>
+    🗒️
+</button>
+
+<div id="stickyNotesContainer"></div>
+
+<button
+    id="settingsButton"
+    class="settings-button"
+    aria-label="Open timer settings"
+>
+    ⚙️
+</button>
+
+
+<section
+    id="settingsPanel"
+    class="settings-panel"
+>
+
+    <div class="settings-header">
+
+        <h2>Timer Settings</h2>
+
+        <button
+            id="closeSettingsButton"
+            class="close-settings-button"
+            aria-label="Close timer settings"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="setting">
+
+        <label for="focusDuration">
+            Focus duration
+        </label>
+
+        <input
+            type="number"
+            id="focusDuration"
+            min="1"
+            value="25"
+        >
+
+        <span>minutes</span>
+
+    </div>
+
+
+    <div class="setting">
+
+        <label for="shortBreakDuration">
+            Short break
+        </label>
+
+        <input
+            type="number"
+            id="shortBreakDuration"
+            min="1"
+            value="5"
+        >
+
+        <span>minutes</span>
+
+    </div>
+
+
+    <div class="setting">
+
+        <label for="longBreakDuration">
+            Long break
+        </label>
+
+        <input
+            type="number"
+            id="longBreakDuration"
+            min="1"
+            value="15"
+        >
+
+        <span>minutes</span>
+
+    </div>
+
+
+    <div class="setting">
+
+        <label for="sessionsUntilLongBreak">
+            Sessions until long break
+        </label>
+
+        <input
+            type="number"
+            id="sessionsUntilLongBreak"
+            min="1"
+            value="4"
+        >
+
+        <span>sessions</span>
+
+    </div>
+
+
+    <button
+        id="saveSettingsButton"
+        class="save-settings-button"
+    >
+        Save Settings
+    </button>
+
+</section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+
+</body>
+</html>
