@@ -17,7 +17,6 @@ body {
 
     color: white;
 }
-
 .app {
     min-height: 100vh;
 
@@ -480,3 +479,191 @@ body {
 .delete-task {
     margin-left: 0;
 }
+
+#ambienceBackground {
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: -1;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+#ambienceBackground video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+
+.ambience-button {
+    position: fixed;
+
+    top: 25px;
+    right: 145px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.25);
+
+    color: white;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(10px);
+
+    z-index: 100;
+}
+
+
+.ambience-button:hover {
+    transform: scale(1.08);
+}
+
+
+.ambience-panel {
+    position: fixed;
+
+    top: 85px;
+    right: 145px;
+
+    width: 380px;
+
+    max-height: 70vh;
+
+    overflow-y: auto;
+
+    padding: 20px;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    color: #333;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.15);
+
+    backdrop-filter: blur(15px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    transform: translateY(-10px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0.2s ease;
+
+    z-index: 100;
+}
+
+
+.ambience-panel.open {
+    opacity: 1;
+
+    visibility: visible;
+
+    transform: translateY(0);
+}
+
+
+.ambience-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+
+.ambience-header h2 {
+    margin: 0;
+}
+
+
+.close-ambience-button {
+    border: none;
+
+    background: transparent;
+
+    font-size: 28px;
+
+    cursor: pointer;
+
+    color: #555;
+}
+
+
+.ambience-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 12px;
+}
+
+
+.ambience-card {
+    border: none;
+
+    background: transparent;
+
+    padding: 0;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    color: #333;
+}
+
+
+.ambience-preview {
+    width: 100%;
+
+    height: 100px;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    margin-bottom: 6px;
+}
+
+
+.ambience-preview img,
+.ambience-preview video {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+.ambience-card:hover .ambience-preview {
+    transform: scale(1.03);
+}
+

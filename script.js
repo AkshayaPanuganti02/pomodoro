@@ -41,6 +41,25 @@ const sessionProgressElement =
 const activeTaskElement =
     document.getElementById("activeTask");
 
+const ambienceButton =
+    document.getElementById("ambienceButton");
+
+const ambiencePanel =
+    document.getElementById("ambiencePanel");
+
+const closeAmbienceButton =
+    document.getElementById("closeAmbienceButton");
+
+const ambienceList =
+    document.getElementById("ambienceList");
+
+const ambienceBackground =
+    document.getElementById("ambienceBackground");
+
+const ambienceState = {
+    selectedAmbienceId: null
+};
+
 const timerConfig = {
     focusDuration: 25 * 60,
     shortBreakDuration: 5 * 60,
@@ -69,6 +88,21 @@ const timerState = {
     intervalId: null,
     activeTaskId: null
 };
+
+const ambiences = [
+    {
+        id: "rainy-room",
+        name: "Rainy Room",
+        type: "image",
+        source: "assets/ambience/rainy-room.jpg"
+    },
+    {
+        id: "forest",
+        name: "Forest",
+        type: "image",
+        source: "assets/ambience/forest.jpg"
+    }
+];
 
 
 let tasks = [];
@@ -642,6 +676,164 @@ function focusOnTask(taskId) {
     renderTasks();
 }
 
+function renderAmbiences() {
+
+    ambienceList.innerHTML = "";
+
+    ambiences.forEach(ambience => {
+
+        const ambienceElement =
+            document.createElement("button");
+
+        ambienceElement.className =
+            "ambience-card";
+
+        ambienceElement.dataset.id =
+            ambience.id;
+
+        ambienceElement.innerHTML = `
+            <div class="ambience-preview">
+
+                ${
+                    ambience.type === "video"
+                    ?
+                    `<video
+                        src="${ambience.source}"
+                        muted
+                        loop
+                        autoplay
+                    ></video>`
+                    :
+                    `<img
+                        src="${ambience.source}"
+                        alt="${ambience.name}"
+                    >`
+                }
+
+            </div>
+
+            <span>${ambience.name}</span>
+        `;
+
+        ambienceList.appendChild(
+            ambienceElement
+        );
+    });
+}
+
+ambienceList.addEventListener(
+    "click",
+    function(event) {
+
+        const card =
+            event.target.closest(".ambience-card");
+
+        if (!card) {
+            return;
+        }
+
+        selectAmbience(card.dataset.id);
+    }
+);
+
+function selectAmbience(ambienceId) {
+
+    const ambience =
+        ambiences.find(
+            item => item.id === ambienceId
+        );
+
+    if (!ambience) {
+        return;
+    }
+
+    ambienceState.selectedAmbienceId =
+        ambience.id;
+
+    renderAmbienceBackground();
+
+    renderAmbiences();
+}
+
+function renderAmbienceBackground() {
+
+    ambienceBackground.innerHTML = "";
+
+    const ambience =
+        ambiences.find(
+            item =>
+                item.id ===
+                ambienceState.selectedAmbienceId
+        );
+
+    if (!ambience) {
+        return;
+    }
+
+    if (ambience.type === "image") {
+
+        ambienceBackground.style.backgroundImage =
+            `url("${ambience.source}")`;
+
+        return;
+    }
+
+    if (ambience.type === "video") {
+
+        const video =
+            document.createElement("video");
+
+        video.src = ambience.source;
+
+        video.autoplay = true;
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+
+        ambienceBackground.appendChild(video);
+    }
+}
+
+ambienceButton.addEventListener(
+    "click",
+    function() {
+
+        ambiencePanel.classList.add("open");
+
+    }
+);
+
+closeAmbienceButton.addEventListener(
+    "click",
+    function() {
+
+        ambiencePanel.classList.remove("open");
+
+    }
+);
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const clickedInsideAmbience =
+            ambiencePanel.contains(event.target);
+
+        const clickedAmbienceButton =
+            ambienceButton.contains(event.target);
+
+        if (
+            !clickedInsideAmbience &&
+            !clickedAmbienceButton
+        ) {
+
+            ambiencePanel.classList.remove(
+                "open"
+            );
+        }
+    }
+);
+
 
 function makeNoteDraggable(
     noteElement,
@@ -727,6 +919,7 @@ function makeNoteDraggable(
 }
 
 renderTasks();
-
 renderTimer();
+renderAmbiences();
+renderAmbienceBackground();
 

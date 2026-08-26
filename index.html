@@ -11,6 +11,8 @@
 
 <body>
 
+    <div id="ambienceBackground"></div>
+
     <main class="app">
 
         <section class="timer-section">
@@ -71,6 +73,14 @@
     </div>
 
 </section>
+
+<button
+    id="ambienceButton"
+    class="ambience-button"
+    aria-label="Open ambience"
+>
+    🌿
+</button>
 
 <button
     id="stickyNotesButton"
@@ -189,6 +199,34 @@
     >
         Save Settings
     </button>
+
+</section>
+
+</section> <!-- settingsPanel -->
+
+<section
+    id="ambiencePanel"
+    class="ambience-panel"
+>
+
+    <div class="ambience-header">
+
+        <h2>Ambience</h2>
+
+        <button
+            id="closeAmbienceButton"
+            class="close-ambience-button"
+            aria-label="Close ambience"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <div
+        id="ambienceList"
+        class="ambience-list"
+    ></div>
 
 </section>
 
