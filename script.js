@@ -112,7 +112,6 @@ const ambiences = [
     }
 ];
 
-
 let tasks = [];
 
 let stickyNotes = [];
@@ -693,8 +692,13 @@ function renderAmbiences() {
         const ambienceElement =
             document.createElement("button");
 
-        ambienceElement.className =
-            "ambience-card";
+        const isSelected =
+    ambience.type === "none"
+        ? ambienceState.selectedAmbienceId === null
+        : ambienceState.selectedAmbienceId === ambience.id;
+
+ambienceElement.className =
+    `ambience-card ${isSelected ? "selected" : ""}`;
 
         ambienceElement.dataset.id =
             ambience.id;
