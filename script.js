@@ -67,7 +67,7 @@ const dateLabelElement =
 
 // Point this at your deployed Java backend once it's live, e.g.
 // "https://your-backend.up.railway.app/api"
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://focusandbrew.netlify.app/api";
 
 const accountButton =
     document.getElementById("accountButton");
