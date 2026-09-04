@@ -52,7 +52,13 @@
 
         <section class="todo-section">
 
-    <h2>Today's Tasks</h2>
+    <h2>Tasks</h2>
+
+    <div class="date-nav" id="dateNav">
+        <button id="prevDateButton" class="date-nav-button" aria-label="Previous day">‹</button>
+        <button id="dateLabel" class="date-label" title="Jump to today">Today</button>
+        <button id="nextDateButton" class="date-nav-button" aria-label="Next day">›</button>
+    </div>
 
     <div class="task-list" id="taskList">
         <!-- Tasks will be created dynamically -->
@@ -203,6 +209,47 @@
 </section>
 
 </section> <!-- settingsPanel -->
+
+<button
+    id="accountButton"
+    class="account-button"
+    aria-label="Account"
+>
+    👤
+</button>
+
+<section
+    id="authPanel"
+    class="auth-panel"
+>
+    <div class="auth-header">
+        <h2 id="authTitle">Log In</h2>
+        <button id="closeAuthButton" class="close-auth-button" aria-label="Close">×</button>
+    </div>
+
+    <div id="authLoggedOutView">
+
+        <p id="authError" class="auth-error"></p>
+
+        <input type="email" id="authEmail" class="auth-input" placeholder="Email">
+        <input type="password" id="authPassword" class="auth-input" placeholder="Password (min 8 characters)">
+
+        <button id="authSubmitButton" class="auth-submit-button">Log In</button>
+
+        <p class="auth-toggle">
+            <span id="authToggleText">Don't have an account?</span>
+            <button id="authToggleButton" class="auth-toggle-button">Sign up</button>
+        </p>
+
+        <p class="auth-note">Tasks stay on this device until you log in. Once logged in, they sync across devices.</p>
+    </div>
+
+    <div id="authLoggedInView" class="auth-logged-in-view">
+        <p>Signed in as <strong id="authUserEmail"></strong></p>
+        <button id="logoutButton" class="auth-submit-button">Log Out</button>
+    </div>
+
+</section>
 
 <section
     id="ambiencePanel"

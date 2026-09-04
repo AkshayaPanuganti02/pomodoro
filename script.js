@@ -56,6 +56,61 @@ const ambienceList =
 const ambienceBackground =
     document.getElementById("ambienceBackground");
 
+const prevDateButton =
+    document.getElementById("prevDateButton");
+
+const nextDateButton =
+    document.getElementById("nextDateButton");
+
+const dateLabelElement =
+    document.getElementById("dateLabel");
+
+// Point this at your deployed Java backend once it's live, e.g.
+// "https://your-backend.up.railway.app/api"
+const API_BASE_URL = "http://localhost:8080/api";
+
+const accountButton =
+    document.getElementById("accountButton");
+
+const authPanel =
+    document.getElementById("authPanel");
+
+const closeAuthButton =
+    document.getElementById("closeAuthButton");
+
+const authTitle =
+    document.getElementById("authTitle");
+
+const authLoggedOutView =
+    document.getElementById("authLoggedOutView");
+
+const authLoggedInView =
+    document.getElementById("authLoggedInView");
+
+const authEmailInput =
+    document.getElementById("authEmail");
+
+const authPasswordInput =
+    document.getElementById("authPassword");
+
+const authSubmitButton =
+    document.getElementById("authSubmitButton");
+
+const authErrorElement =
+    document.getElementById("authError");
+
+const authToggleText =
+    document.getElementById("authToggleText");
+
+const authToggleButton =
+    document.getElementById("authToggleButton");
+
+const authUserEmailElement =
+    document.getElementById("authUserEmail");
+
+const logoutButton =
+    document.getElementById("logoutButton");
+
 const ambienceState = {
     selectedAmbienceId: null
 };
@@ -112,7 +167,322 @@ const ambiences = [
     }
 ];
 
-let tasks = [];
+const TASKS_STORAGE_KEY = "pomodoro.tasks";
+
+function getDateKey(date) {
+
+    const year = date.getFullYear();
+
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function addDays(dateKey, amount) {
+
+    const [year, month, day] = dateKey.split("-").map(Number);
+
+    const date = new Date(year, month - 1, day);
+
+    date.setDate(date.getDate() + amount);
+
+    return getDateKey(date);
+}
+
+function formatDateLabel(dateKey) {
+
+    const todayKey = getDateKey(new Date());
+
+    const yesterdayKey = addDays(todayKey, -1);
+
+    const tomorrowKey = addDays(todayKey, 1);
+
+    if (dateKey === todayKey) {
+        return "Today";
+    }
+
+    if (dateKey === yesterdayKey) {
+        return "Yesterday";
+    }
+
+    if (dateKey === tomorrowKey) {
+        return "Tomorrow";
+    }
+
+    const [year, month, day] = dateKey.split("-").map(Number);
+
+    const date = new Date(year, month - 1, day);
+
+    return date.toLocaleDateString(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "numeric"
+    });
+}
+
+function loadTasks() {
+
+    try {
+
+        const stored = localStorage.getItem(TASKS_STORAGE_KEY);
+
+        if (!stored) {
+            return [];
+        }
+
+        const parsed = JSON.parse(stored);
+
+        if (!Array.isArray(parsed)) {
+            return [];
+        }
+
+        return parsed;
+
+    } catch (error) {
+
+        console.error("Could not load saved tasks:", error);
+
+        return [];
+    }
+}
+
+function saveTasks() {
+
+    try {
+
+        localStorage.setItem(
+            TASKS_STORAGE_KEY,
+            JSON.stringify(tasks)
+        );
+
+    } catch (error) {
+
+        console.error("Could not save tasks:", error);
+    }
+}
+
+const dateState = {
+    selectedDate: getDateKey(new Date())
+};
+
+const AUTH_TOKEN_KEY = "pomodoro.authToken";
+const AUTH_EMAIL_KEY = "pomodoro.authEmail";
+
+const authState = {
+    token: localStorage.getItem(AUTH_TOKEN_KEY),
+    email: localStorage.getItem(AUTH_EMAIL_KEY),
+    mode: "login" // or "register"
+};
+
+function isLoggedIn() {
+    return Boolean(authState.token);
+}
+
+// Every authenticated request carries the JWT in the Authorization header.
+// The token never appears in the URL, so it won't end up in server logs
+// or browser history.
+async function apiFetch(path, options = {}) {
+
+    const headers = Object.assign(
+        { "Content-Type": "application/json" },
+        options.headers || {}
+    );
+
+    if (authState.token) {
+        headers.Authorization = `Bearer ${authState.token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers
+    });
+
+    if (response.status === 401) {
+        // Token expired or invalid - sign the user out locally rather than
+        // silently failing, so they know to log back in.
+        logout();
+        throw new Error("Session expired. Please log in again.");
+    }
+
+    if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.error || "Request failed");
+    }
+
+    if (response.status === 204) {
+        return null;
+    }
+
+    return response.json();
+}
+
+function serverTaskToLocal(serverTask) {
+    return {
+        id: serverTask.id,
+        title: serverTask.title,
+        completed: serverTask.completed,
+        pomodorosCompleted: serverTask.pomodorosCompleted,
+        date: serverTask.date
+    };
+}
+
+async function loadTasksFromServer() {
+
+    try {
+
+        const serverTasks = await apiFetch("/tasks");
+
+        tasks = serverTasks.map(serverTaskToLocal);
+
+        renderTasks();
+
+    } catch (error) {
+
+        console.error("Could not load tasks from server:", error);
+    }
+}
+
+function setAuthSession(token, email) {
+
+    authState.token = token;
+    authState.email = email;
+
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    localStorage.setItem(AUTH_EMAIL_KEY, email);
+}
+
+function logout() {
+
+    authState.token = null;
+    authState.email = null;
+
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_EMAIL_KEY);
+
+    // Fall back to whatever guest tasks were saved locally before login
+    tasks = loadTasks();
+
+    updateAuthUI();
+    renderTasks();
+}
+
+function updateAuthUI() {
+
+    if (isLoggedIn()) {
+
+        accountButton.classList.add("logged-in");
+
+        authLoggedOutView.style.display = "none";
+        authLoggedInView.style.display = "block";
+
+        authUserEmailElement.textContent = authState.email;
+
+    } else {
+
+        accountButton.classList.remove("logged-in");
+
+        authLoggedOutView.style.display = "block";
+        authLoggedInView.style.display = "none";
+
+        authEmailInput.value = "";
+        authPasswordInput.value = "";
+        authErrorElement.textContent = "";
+    }
+}
+
+function setAuthMode(mode) {
+
+    authState.mode = mode;
+
+    authErrorElement.textContent = "";
+
+    if (mode === "login") {
+
+        authTitle.textContent = "Log In";
+        authSubmitButton.textContent = "Log In";
+        authToggleText.textContent = "Don't have an account?";
+        authToggleButton.textContent = "Sign up";
+
+    } else {
+
+        authTitle.textContent = "Sign Up";
+        authSubmitButton.textContent = "Sign Up";
+        authToggleText.textContent = "Already have an account?";
+        authToggleButton.textContent = "Log in";
+    }
+}
+
+async function handleAuthSubmit() {
+
+    const email = authEmailInput.value.trim();
+    const password = authPasswordInput.value;
+
+    authErrorElement.textContent = "";
+
+    if (!email || !password) {
+        authErrorElement.textContent = "Please fill in both fields.";
+        return;
+    }
+
+    const endpoint = authState.mode === "login" ? "/auth/login" : "/auth/register";
+
+    try {
+
+        const data = await apiFetch(endpoint, {
+            method: "POST",
+            body: JSON.stringify({ email, password })
+        });
+
+        setAuthSession(data.token, data.email);
+
+        updateAuthUI();
+
+        authPanel.classList.remove("open");
+
+        await loadTasksFromServer();
+
+    } catch (error) {
+
+        authErrorElement.textContent =
+            error.message || "Something went wrong.";
+    }
+}
+
+accountButton.addEventListener("click", function() {
+    authPanel.classList.toggle("open");
+});
+
+closeAuthButton.addEventListener("click", function() {
+    authPanel.classList.remove("open");
+});
+
+authToggleButton.addEventListener("click", function() {
+    setAuthMode(authState.mode === "login" ? "register" : "login");
+});
+
+authSubmitButton.addEventListener("click", handleAuthSubmit);
+
+authPasswordInput.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        handleAuthSubmit();
+    }
+});
+
+logoutButton.addEventListener("click", logout);
+
+document.addEventListener("click", function(event) {
+
+    const clickedInsideAuth = authPanel.contains(event.target);
+    const clickedAccountButton = accountButton.contains(event.target);
+
+    if (!clickedInsideAuth && !clickedAccountButton) {
+        authPanel.classList.remove("open");
+    }
+});
+
+let tasks = isLoggedIn() ? [] : loadTasks();
 
 let stickyNotes = [];
 
@@ -126,6 +496,29 @@ closeSettingsButton.addEventListener("click", function() {
 
     settingsPanel.classList.remove("open");
 
+});
+
+prevDateButton.addEventListener("click", function() {
+
+    dateState.selectedDate =
+        addDays(dateState.selectedDate, -1);
+
+    renderTasks();
+});
+
+nextDateButton.addEventListener("click", function() {
+
+    dateState.selectedDate =
+        addDays(dateState.selectedDate, 1);
+
+    renderTasks();
+});
+
+dateLabelElement.addEventListener("click", function() {
+
+    dateState.selectedDate = getDateKey(new Date());
+
+    renderTasks();
 });
 
 addTaskButton.addEventListener("click", addTask);
@@ -228,7 +621,7 @@ stickyNotesContainer.addEventListener(
     }
 );
 
-function addTask() {
+async function addTask() {
 
     const taskText = taskInput.value.trim();
 
@@ -236,16 +629,43 @@ function addTask() {
         return;
     }
 
-    const task = {
-    id: Date.now(),
-    title: taskText,
-    completed: false,
-    pomodorosCompleted: 0
-};
-
-    tasks.push(task);
-
     taskInput.value = "";
+
+    if (isLoggedIn()) {
+
+        try {
+
+            const serverTask = await apiFetch("/tasks", {
+                method: "POST",
+                body: JSON.stringify({
+                    title: taskText,
+                    date: dateState.selectedDate,
+                    completed: false,
+                    pomodorosCompleted: 0
+                })
+            });
+
+            tasks.push(serverTaskToLocal(serverTask));
+
+        } catch (error) {
+            console.error("Could not save task to server:", error);
+            return;
+        }
+
+    } else {
+
+        const task = {
+            id: Date.now(),
+            title: taskText,
+            completed: false,
+            pomodorosCompleted: 0,
+            date: dateState.selectedDate
+        };
+
+        tasks.push(task);
+
+        saveTasks();
+    }
 
     renderTasks();
 }
@@ -253,9 +673,16 @@ function addTask() {
 
 function renderTasks() {
 
+    dateLabelElement.textContent =
+        formatDateLabel(dateState.selectedDate);
+
     taskList.innerHTML = "";
 
-    if (tasks.length === 0) {
+    const tasksForDate = tasks.filter(
+        task => task.date === dateState.selectedDate
+    );
+
+    if (tasksForDate.length === 0) {
 
         taskList.innerHTML = `
             <p class="empty-state">
@@ -266,7 +693,7 @@ function renderTasks() {
         return;
     }
 
-    tasks.forEach(task => {
+    tasksForDate.forEach(task => {
 
         const taskElement = document.createElement("div");
 
@@ -307,12 +734,22 @@ function renderTasks() {
     });
 }
 
-taskList.addEventListener("click", function(event) {
+taskList.addEventListener("click", async function(event) {
 
     if (event.target.classList.contains("delete-task")) {
 
         const taskId =
             Number(event.target.dataset.id);
+
+        if (isLoggedIn()) {
+
+            try {
+                await apiFetch(`/tasks/${taskId}`, { method: "DELETE" });
+            } catch (error) {
+                console.error("Could not delete task on server:", error);
+                return;
+            }
+        }
 
         tasks = tasks.filter(
             task => task.id !== taskId
@@ -320,6 +757,10 @@ taskList.addEventListener("click", function(event) {
 
         if (timerState.activeTaskId === taskId) {
             timerState.activeTaskId = null;
+        }
+
+        if (!isLoggedIn()) {
+            saveTasks();
         }
 
         renderTasks();
@@ -339,7 +780,7 @@ taskList.addEventListener("click", function(event) {
 
 });
 
-taskList.addEventListener("change", function(event) {
+taskList.addEventListener("change", async function(event) {
 
     if (!event.target.classList.contains("task-checkbox")) {
         return;
@@ -355,8 +796,33 @@ taskList.addEventListener("change", function(event) {
 
     task.completed = event.target.checked;
 
+    if (isLoggedIn()) {
+
+        try {
+            await apiFetch(`/tasks/${taskId}`, {
+                method: "PUT",
+                body: JSON.stringify(taskToServerPayload(task))
+            });
+        } catch (error) {
+            console.error("Could not update task on server:", error);
+        }
+
+    } else {
+
+        saveTasks();
+    }
+
     renderTasks();
 });
+
+function taskToServerPayload(task) {
+    return {
+        title: task.title,
+        completed: task.completed,
+        pomodorosCompleted: task.pomodorosCompleted,
+        date: task.date
+    };
+}
 
 
 function renderTimer() {
@@ -474,6 +940,20 @@ function completeSession() {
 
         if (activeTask) {
             activeTask.pomodorosCompleted++;
+
+            if (isLoggedIn()) {
+
+                apiFetch(`/tasks/${activeTask.id}`, {
+                    method: "PUT",
+                    body: JSON.stringify(taskToServerPayload(activeTask))
+                }).catch(error =>
+                    console.error("Could not sync pomodoro count:", error)
+                );
+
+            } else {
+
+                saveTasks();
+            }
         }
     }
 
@@ -1013,4 +1493,11 @@ renderTasks();
 renderTimer();
 renderAmbiences();
 renderAmbienceBackground();
+
+setAuthMode("login");
+updateAuthUI();
+
+if (isLoggedIn()) {
+    loadTasksFromServer();
+}
 
