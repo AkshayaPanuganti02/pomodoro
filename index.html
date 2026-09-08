@@ -4,382 +4,339 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FocusNest</title>
+    <title>FocusNest — Your Little Space to Focus</title>
+    <meta name="description" content="FocusNest is a calm Pomodoro timer and task space. Focus in cycles, mix ambient sounds, keep notes close, and build a rhythm that works for you.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <div id="ambienceBackground"></div>
-
-    <!-- ============ TOP NAV ============ -->
-    <header class="topnav">
-
-        <div class="brand">
-            <span class="brand-leaf">🌱</span>
-            <div>
-                <div class="brand-name">FocusNest</div>
-                <div class="brand-tag">Your little space to focus</div>
-            </div>
+    <!-- ============ NAV ============ -->
+    <header class="landing-nav">
+        <div class="landing-brand">
+            <span class="brand-leaf">🪺</span>
+            <span class="brand-name">FocusNest</span>
         </div>
 
-        <nav class="nav-links">
-            <button class="nav-link active" id="navHome">🏠 Home</button>
-            <button class="nav-link" id="navAmbience">🎧 Ambience</button>
-            <button class="nav-link" id="navNotes">📝 Notes</button>
-            <button class="nav-link" id="navSettings">⚙️ Settings</button>
+        <nav class="landing-nav-links">
+            <a href="#how-it-works">How it works</a>
+            <a href="#features">Features</a>
+            <a href="#ambience">Ambience</a>
+            <a href="#audio-credits">Audio Credits</a>
         </nav>
 
-        <button id="accountButton" class="account-avatar-button" aria-label="Account">👤</button>
-
+        <a href="/nest/" class="btn-nest btn-nest-small">🪺 Enter the Nest</a>
     </header>
 
-    <!-- ============ MOBILE BOTTOM NAV ============ -->
-    <nav class="bottom-nav">
-        <button class="bottom-nav-item active" id="bottomNavHome">
-            <span>🏠</span>Home
-        </button>
-        <button class="bottom-nav-item" id="bottomNavTasks">
-            <span>✅</span>Tasks
-        </button>
-        <button class="bottom-nav-item" id="bottomNavAmbience">
-            <span>🎧</span>Ambience
-        </button>
-        <button class="bottom-nav-item" id="bottomNavNotes">
-            <span>📝</span>Notes
-        </button>
-        <button class="bottom-nav-item" id="bottomNavMore">
-            <span>⋯</span>More
-        </button>
-    </nav>
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+        <div class="hero-leaf">🪺</div>
 
-    <main class="dashboard">
+        <h1>FocusNest</h1>
+        <p class="hero-tagline">Your little space to focus.</p>
 
-        <!-- ============ FOCUS CARD ============ -->
-        <section class="focus-card" id="focusCard">
+        <p class="hero-sub">
+            A calm place to organize your tasks, focus deeply,
+            and take meaningful breaks.
+        </p>
 
-            <div class="card-drag-handle" title="Drag to move, double-click to reset">⠿</div>
+        <a href="/nest/" class="btn-nest">🪺 Enter the Nest</a>
 
-            <!-- TIMER VIEW -->
-            <div class="card-view active" id="timerView">
+        <a href="#how-it-works" class="discover-more">↓ Discover more</a>
+    </section>
 
-                <div class="task-select-row">
-                    <label for="activeTaskSelect" class="task-select-label">What are you working on?</label>
-                    <select id="activeTaskSelect" class="task-select">
-                        <option value="">No task selected</option>
-                    </select>
-                </div>
+    <!-- ============ HOW POMODORO WORKS ============ -->
+    <section class="section" id="how-it-works">
 
-                <div class="progress-ring-wrap">
+        <p class="eyebrow-divider">Focus in cycles.</p>
 
-                    <svg viewBox="0 0 220 220" class="progress-ring">
-                        <circle class="ring-track" cx="110" cy="110" r="96"></circle>
-                        <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="96"></circle>
-                    </svg>
+        <p class="section-intro">
+            The Pomodoro Technique helps you work with intention
+            instead of working endlessly.
+        </p>
 
-                    <div class="timer-center">
-                        <div class="timer" id="timer">25:00</div>
-                        <p class="session-type" id="sessionType">Focus</p>
-                    </div>
+        <div class="cycle-diagram">
 
-                </div>
-
-                <div class="timer-controls">
-                    <button id="startButton" class="btn-primary btn-lg">▶ Start Focus</button>
-                    <button id="resetButton" class="btn-ghost">↻ Reset</button>
-                </div>
-
-                <div class="session-dots" id="sessionDots"></div>
-
-                <p class="session-count" id="sessionProgress">Session 1 of 4</p>
-
+            <div class="cycle-step">
+                <span class="cycle-icon">🎯</span>
+                <span class="cycle-label">Focus</span>
+                <span class="cycle-sub">25 minutes</span>
             </div>
 
-            <!-- SESSION COMPLETE VIEW -->
-            <div class="card-view" id="completeView">
+            <span class="cycle-arrow">↓</span>
 
-                <div class="complete-icon">🌱</div>
-
-                <h2 class="complete-title">Session Complete!</h2>
-                <p class="complete-sub">Great work! 🎉</p>
-                <p class="complete-detail">You focused for <strong id="completedMinutes">25</strong> minutes.</p>
-
-                <div class="quote-box">"Progress, not perfection. Keep going!"</div>
-
-                <div class="complete-actions">
-                    <button id="takeBreakButton" class="btn-primary">Take a Break</button>
-                    <button id="startNextButton" class="btn-secondary">Start Next Session</button>
-                </div>
-
+            <div class="cycle-step">
+                <span class="cycle-icon">☕</span>
+                <span class="cycle-label">Short Break</span>
+                <span class="cycle-sub">5 minutes</span>
             </div>
 
-            <!-- BREAK INTRO VIEW -->
-            <div class="card-view" id="breakIntroView">
+            <span class="cycle-arrow">↓</span>
 
-                <div class="break-hero"></div>
+            <div class="cycle-step">
+                <span class="cycle-icon">🎯</span>
+                <span class="cycle-label">Focus Again</span>
+            </div>
 
-                <h2 class="complete-title">Time for a Break</h2>
-                <p class="complete-sub">You've earned this! 🌱</p>
+            <span class="cycle-arrow">↓</span>
 
-                <div class="timer break-preview-timer" id="breakPreviewTimer">05:00</div>
+            <div class="cycle-step">
+                <span class="cycle-icon">🌙</span>
+                <span class="cycle-label">Long Break</span>
+                <span class="cycle-sub">After 4 sessions</span>
+            </div>
 
-                <ul class="break-suggestions">
-                    <li><label><input type="radio" name="breakSuggestion" checked> Take a short walk</label></li>
-                    <li><label><input type="radio" name="breakSuggestion"> Drink some water</label></li>
-                    <li><label><input type="radio" name="breakSuggestion"> Stretch</label></li>
-                    <li><label><input type="radio" name="breakSuggestion"> Look away from your screen</label></li>
+        </div>
+
+        <p class="section-outro">
+            Focus for a set period, take a short break, and repeat.
+            FocusNest helps you build a sustainable rhythm — one session at a time.
+        </p>
+
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section class="section section-alt" id="features">
+
+        <h2>More than just a timer.</h2>
+        <p class="section-intro">
+            FocusNest brings the small things you need for a focused day
+            into one calm space.
+        </p>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+                <span class="feature-icon">⏱️</span>
+                <h3>Focus with intention</h3>
+                <p>A timer that works with your rhythm. Customize focus sessions, short breaks, and long breaks.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">📋</span>
+                <h3>Keep your tasks close</h3>
+                <p>Know what you're focusing on. Create daily tasks and select what you want to work on.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🎧</span>
+                <h3>Create your environment</h3>
+                <p>Find your focus atmosphere. Mix calming sounds and create an environment that helps you focus.</p>
+            </div>
+
+            <div class="feature-card">
+                <span class="feature-icon">🗒️</span>
+                <h3>Keep thoughts nearby</h3>
+                <p>Don't lose your ideas. Use quick notes without leaving your focus space.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ============ YOUR FOCUS FLOW ============ -->
+    <section class="section" id="focus-flow">
+
+        <h2>Find your rhythm.</h2>
+        <p class="section-intro">
+            There is no perfect productivity routine.
+            FocusNest simply gives you a calm place to build your own.
+        </p>
+
+        <div class="flow-timeline">
+
+            <div class="flow-step">
+                <span class="flow-icon">🌱</span>
+                <div>
+                    <span class="flow-number">1</span>
+                    <span class="flow-label">Choose a task</span>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <span class="flow-icon">🎯</span>
+                <div>
+                    <span class="flow-number">2</span>
+                    <span class="flow-label">Start your focus</span>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <span class="flow-icon">🎧</span>
+                <div>
+                    <span class="flow-number">3</span>
+                    <span class="flow-label">Create your ambience</span>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <span class="flow-icon">🌿</span>
+                <div>
+                    <span class="flow-number">4</span>
+                    <span class="flow-label">Take a meaningful break</span>
+                </div>
+            </div>
+
+            <div class="flow-step">
+                <span class="flow-icon">✨</span>
+                <div>
+                    <span class="flow-number">5</span>
+                    <span class="flow-label">Repeat</span>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ============ AMBIENCE ============ -->
+    <section class="section section-dark" id="ambience">
+
+        <span class="section-dark-icon">🎧</span>
+
+        <h2>Your environment matters.</h2>
+
+        <p class="section-intro section-intro-dark">
+            Focus isn't just about what you're doing.
+            It's also about where your mind feels comfortable.
+        </p>
+
+        <div class="ambience-tags">
+            <span class="ambience-tag">🌧 Rain</span>
+            <span class="ambience-tag">🚶 Walking</span>
+            <span class="ambience-tag">🌿 Nature</span>
+            <span class="ambience-tag">🌬️ Ambient sounds</span>
+        </div>
+
+    </section>
+
+    <!-- ============ NOTES + TASKS MOCK ============ -->
+    <section class="section" id="workspace">
+
+        <p class="eyebrow-divider">Your little space</p>
+
+        <div class="workspace-mock">
+
+            <div class="mock-card">
+                <p class="mock-card-title">Today</p>
+                <ul class="mock-task-list">
+                    <li><span class="mock-check"></span> Learn Java</li>
+                    <li><span class="mock-check"></span> Build my project</li>
+                    <li><span class="mock-check mock-check-done">✓</span> <span class="mock-done">Finish documentation</span></li>
                 </ul>
-
-                <div class="complete-actions">
-                    <button id="startBreakButton" class="btn-primary">▶ Start Break</button>
-                    <button id="skipBreakButton" class="btn-secondary">Skip</button>
-                </div>
-
             </div>
 
-        </section>
-
-        <!-- ============ TASKS CARD ============ -->
-        <section class="tasks-card" id="tasksCard">
-
-            <div class="card-drag-handle" title="Drag to move, double-click to reset">⠿</div>
-
-            <div class="tasks-header">
-                <h2>Today</h2>
-                <button id="addTaskHeaderButton" class="btn-primary btn-sm">+ Add task</button>
-            </div>
-
-            <div class="date-nav" id="dateNav">
-                <button id="prevDateButton" class="date-nav-button" aria-label="Previous day">‹</button>
-                <button id="dateLabel" class="date-label" title="Jump to today">Today</button>
-                <button id="nextDateButton" class="date-nav-button" aria-label="Next day">›</button>
-            </div>
-
-            <div class="task-list" id="taskList"></div>
-
-            <div class="add-task-container">
-                <input type="text" id="taskInput" placeholder="What do you need to do?">
-                <button id="addTaskButton">+ Add task</button>
-            </div>
-
-            <div class="quote-box small">🌱 "Small steps every day lead to big progress."</div>
-
-        </section>
-
-    </main>
-
-    <!-- ============ AMBIENCE MODAL ============ -->
-    <div class="modal-overlay" id="ambienceOverlay">
-        <div class="modal-panel ambience-modal">
-
-            <div class="modal-header">
-                <div class="modal-header-icon">🎧</div>
-                <div>
-                    <h2>Ambience</h2>
-                    <p class="modal-subtitle">Set the mood for your focus session.</p>
-                </div>
-                <button class="modal-close" id="closeAmbienceButton" aria-label="Close">×</button>
-            </div>
-
-            <div class="tabs">
-                <button class="tab active" id="tabEnvironments">🌿 Environments</button>
-                <button class="tab" id="tabCustomMix">🎚️ Custom Mix</button>
-            </div>
-
-            <div id="environmentsSection">
-                <p class="section-label">Focus Environments <span>Pick a preset and get started instantly.</span></p>
-                <div class="ambience-list" id="ambienceList"></div>
-            </div>
-
-            <div class="volume-row">
-                <span class="volume-icon">🔊</span>
-                <div class="volume-info">
-                    <span class="volume-label">Master Volume</span>
-                    <span class="volume-sub">Control the overall ambience volume.</span>
-                </div>
-                <input type="range" id="masterVolume" min="0" max="100" value="70" class="sound-volume">
-                <span class="volume-value" id="masterVolumeValue">70%</span>
-            </div>
-
-            <div class="sounds-section">
-                <div class="sounds-section-header">
-                    <span class="section-label">Active Sounds <span>Adjust individual sounds or turn them on/off.</span></span>
-                    <button class="link-button" id="clearAllSounds">Clear All</button>
-                </div>
-
-                <div id="soundsList" class="sounds-list"></div>
-
-                <div class="sounds-footer">
-                    <button class="btn-ghost btn-sm" id="addAnotherSound">+ Add another sound</button>
-                    <button class="btn-primary btn-sm" id="playAllSounds">▶ Play All</button>
-                </div>
+            <div class="mock-sticky">
+                🗒️ "Remember to check the API response before deployment."
             </div>
 
         </div>
-    </div>
 
-    <!-- ============ SETTINGS MODAL ============ -->
-    <div class="modal-overlay" id="settingsOverlay">
-        <div class="modal-panel settings-modal">
+        <p class="section-outro">Everything you need is nearby.</p>
 
-            <div class="modal-header">
-                <div class="modal-header-icon">⚙️</div>
-                <div>
-                    <h2>Focus Settings</h2>
-                    <p class="modal-subtitle">Customize your rhythm.</p>
-                </div>
-                <button class="modal-close" id="closeSettingsButton" aria-label="Close">×</button>
+    </section>
+
+    <!-- ============ PHILOSOPHY ============ -->
+    <section class="section section-philosophy">
+
+        <span class="philosophy-icon">🪺</span>
+
+        <h2>You don't have to do everything today.</h2>
+        <p class="philosophy-sub">Just focus on the next small thing.</p>
+
+        <p class="section-outro">
+            FocusNest is built around the idea that productivity doesn't
+            always need to be loud, complicated, or stressful.
+        </p>
+
+    </section>
+
+    <!-- ============ AUDIO CREDITS ============ -->
+    <section class="section section-alt" id="audio-credits">
+
+        <h2>Audio &amp; Credits</h2>
+        <p class="section-intro">
+            FocusNest uses ambient audio from talented creators and open audio resources.
+        </p>
+
+        <div class="credits-grid">
+
+            <div class="credit-card">
+                <span class="credit-icon">🌧</span>
+                <h3>Rain Ambience</h3>
+                <p><strong>Creator:</strong> <span class="credit-placeholder">[Add creator name]</span></p>
+                <p><strong>Source:</strong> <span class="credit-placeholder">[Add source name]</span></p>
+                <p><strong>License:</strong> <span class="credit-placeholder">[Add license details]</span></p>
             </div>
 
-            <div class="setting-row">
-                <span class="setting-icon setting-icon-orange">☀️</span>
-                <div class="setting-info">
-                    <span class="setting-name">Focus duration</span>
-                    <span class="setting-desc">How long do you want to focus?</span>
-                </div>
-                <div class="stepper">
-                    <button class="stepper-btn" data-target="focusDuration" data-dir="-1">−</button>
-                    <input type="number" id="focusDuration" min="1" value="25" readonly>
-                    <button class="stepper-btn" data-target="focusDuration" data-dir="1">+</button>
-                </div>
-                <span class="setting-unit">minutes</span>
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-icon setting-icon-pink">🍵</span>
-                <div class="setting-info">
-                    <span class="setting-name">Short break</span>
-                    <span class="setting-desc">A quick recharge.</span>
-                </div>
-                <div class="stepper">
-                    <button class="stepper-btn" data-target="shortBreakDuration" data-dir="-1">−</button>
-                    <input type="number" id="shortBreakDuration" min="1" value="5" readonly>
-                    <button class="stepper-btn" data-target="shortBreakDuration" data-dir="1">+</button>
-                </div>
-                <span class="setting-unit">minutes</span>
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-icon setting-icon-blue">🌙</span>
-                <div class="setting-info">
-                    <span class="setting-name">Long break</span>
-                    <span class="setting-desc">A longer rest.</span>
-                </div>
-                <div class="stepper">
-                    <button class="stepper-btn" data-target="longBreakDuration" data-dir="-1">−</button>
-                    <input type="number" id="longBreakDuration" min="1" value="15" readonly>
-                    <button class="stepper-btn" data-target="longBreakDuration" data-dir="1">+</button>
-                </div>
-                <span class="setting-unit">minutes</span>
-            </div>
-
-            <div class="setting-row">
-                <span class="setting-icon setting-icon-flame">🔥</span>
-                <div class="setting-info">
-                    <span class="setting-name">Sessions before long break</span>
-                    <span class="setting-desc">How many focus sessions?</span>
-                </div>
-                <div class="stepper">
-                    <button class="stepper-btn" data-target="sessionsUntilLongBreak" data-dir="-1">−</button>
-                    <input type="number" id="sessionsUntilLongBreak" min="1" value="4" readonly>
-                    <button class="stepper-btn" data-target="sessionsUntilLongBreak" data-dir="1">+</button>
-                </div>
-                <span class="setting-unit">sessions</span>
-            </div>
-
-            <div class="settings-footer">
-                <button class="btn-ghost" id="resetSettingsButton">↻ Reset to defaults</button>
-                <button class="btn-primary" id="saveSettingsButton">Save Changes</button>
+            <div class="credit-card">
+                <span class="credit-icon">🚶</span>
+                <h3>Walking Sounds</h3>
+                <p><strong>Creator:</strong> <span class="credit-placeholder">[Add creator name]</span></p>
+                <p><strong>Source:</strong> <span class="credit-placeholder">[Add source name]</span></p>
+                <p><strong>License:</strong> <span class="credit-placeholder">[Add license details]</span></p>
             </div>
 
         </div>
-    </div>
 
-    <!-- ============ NOTES MODAL ============ -->
-    <div class="modal-overlay" id="notesOverlay">
-        <div class="modal-panel notes-modal">
+        <button class="btn-secondary-outline" id="viewFullCreditsButton">View Full Audio Credits</button>
 
-            <div class="modal-header">
-                <div class="modal-header-icon">📝</div>
-                <div>
-                    <h2>Notes</h2>
-                    <p class="modal-subtitle">Capture your thoughts, ideas and reminders.</p>
-                </div>
-                <button class="btn-primary btn-sm" id="newNoteButton" style="margin-left:auto;">+ New Note</button>
-                <button class="modal-close" id="closeNotesButton" aria-label="Close">×</button>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="hero hero-final">
+        <div class="hero-leaf">🪺</div>
+
+        <h2>Ready to find your focus?</h2>
+        <p class="hero-sub">Your little space is waiting.</p>
+
+        <a href="/nest/" class="btn-nest">🪺 Enter the Nest</a>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="landing-footer">
+        <p>© 2026 FocusNest</p>
+        <p class="footer-sub">Made for quieter, calmer focus.</p>
+
+        <div class="footer-links">
+            <a href="#audio-credits">Audio Credits</a>
+            <a href="#" id="privacyLink">Privacy</a>
+            <a href="#" id="aboutLink">About</a>
+        </div>
+    </footer>
+
+    <!-- ============ FULL CREDITS MODAL ============ -->
+    <div class="modal-overlay" id="creditsOverlay">
+        <div class="modal-panel">
+            <button class="modal-close" id="closeCreditsButton" aria-label="Close">×</button>
+
+            <h2>Full Audio Credits</h2>
+
+            <p class="section-intro" style="text-align:left;">
+                The exact attribution below should match the license terms
+                of each audio file actually used in the app.
+            </p>
+
+            <div class="credit-card" style="margin-bottom:14px;">
+                <span class="credit-icon">🌧</span>
+                <h3>Rain Ambience</h3>
+                <p><strong>Creator:</strong> <span class="credit-placeholder">[Add creator name]</span></p>
+                <p><strong>Source:</strong> <span class="credit-placeholder">[Add source name]</span></p>
+                <p><strong>License:</strong> <span class="credit-placeholder">[Add license details]</span></p>
             </div>
 
-            <div class="notes-grid" id="notesGrid"></div>
-
+            <div class="credit-card">
+                <span class="credit-icon">🚶</span>
+                <h3>Walking Sounds</h3>
+                <p><strong>Creator:</strong> <span class="credit-placeholder">[Add creator name]</span></p>
+                <p><strong>Source:</strong> <span class="credit-placeholder">[Add source name]</span></p>
+                <p><strong>License:</strong> <span class="credit-placeholder">[Add license details]</span></p>
+            </div>
         </div>
     </div>
-
-    <!-- ============ ACCOUNT MODAL ============ -->
-    <div class="modal-overlay" id="authOverlay">
-        <div class="modal-panel auth-modal">
-
-            <button class="modal-close" id="closeAuthButton" aria-label="Close">×</button>
-
-            <div id="authLoggedOutView">
-
-                <div class="auth-brand">
-                    <span class="brand-leaf">🌱</span>
-                    <div class="brand-name">FocusNest</div>
-                    <p class="brand-tag">Your little space to focus.</p>
-                </div>
-
-                <div class="auth-tabs">
-                    <button class="auth-tab active" id="authTabLogin">Log In</button>
-                    <button class="auth-tab" id="authTabSignup">Sign Up</button>
-                </div>
-
-                <p id="authError" class="auth-error"></p>
-
-                <div class="auth-field">
-                    <span class="auth-field-icon">✉️</span>
-                    <input type="email" id="authEmail" class="auth-input" placeholder="you@example.com">
-                </div>
-
-                <div class="auth-field">
-                    <span class="auth-field-icon">🔒</span>
-                    <input type="password" id="authPassword" class="auth-input" placeholder="Password (min 8 characters)">
-                </div>
-
-                <button id="authSubmitButton" class="btn-primary btn-block">Log In</button>
-
-                <div class="auth-divider"><span>or continue with</span></div>
-
-                <div class="auth-social-row">
-                    <button class="auth-social-button" id="googleAuthButton">🔵 Google</button>
-                    <button class="auth-social-button" id="microsoftAuthButton">🟦 Microsoft</button>
-                </div>
-
-                <p class="auth-toggle">
-                    <span id="authToggleText">New here?</span>
-                    <button id="authToggleButton" class="auth-toggle-button">Create an account</button>
-                </p>
-
-                <p class="auth-note">Tasks stay on this device until you log in. Once logged in, they sync across devices.</p>
-            </div>
-
-            <div id="authLoggedInView" class="auth-logged-in-view">
-                <div class="auth-brand">
-                    <span class="brand-leaf">🌱</span>
-                    <div class="brand-name">Welcome back!</div>
-                </div>
-                <p>Signed in as <strong id="authUserEmail"></strong></p>
-                <button id="logoutButton" class="btn-primary btn-block">Log Out</button>
-            </div>
-
-        </div>
-    </div>
-
-    <button id="stickyNotesButton" class="sticky-notes-button" aria-label="Open sticky notes">🗒️</button>
-    <div id="stickyNotesContainer"></div>
 
     <script src="script.js"></script>
 
