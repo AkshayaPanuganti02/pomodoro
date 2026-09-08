@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Pomodoro</title>
+    <title>FocusNest</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,275 +16,372 @@
 
     <div id="ambienceBackground"></div>
 
-    <main class="app">
+    <!-- ============ TOP NAV ============ -->
+    <header class="topnav">
 
-        <section class="timer-section">
+        <div class="brand">
+            <span class="brand-leaf">🌱</span>
+            <div>
+                <div class="brand-name">FocusNest</div>
+                <div class="brand-tag">Your little space to focus</div>
+            </div>
+        </div>
 
-    <p class="session-type" id="sessionType">
-        FOCUS
-    </p>
+        <nav class="nav-links">
+            <button class="nav-link active" id="navHome">🏠 Home</button>
+            <button class="nav-link" id="navAmbience">🎧 Ambience</button>
+            <button class="nav-link" id="navNotes">📝 Notes</button>
+            <button class="nav-link" id="navSettings">⚙️ Settings</button>
+        </nav>
 
-    <p
-    id="activeTask"
-    class="active-task"
->
-</p>
+        <button id="accountButton" class="account-avatar-button" aria-label="Account">👤</button>
 
-    <div class="timer" id="timer">
-        25:00
-    </div>
+    </header>
 
-    <div class="timer-controls">
-
-    <button id="startButton" class="start-button">
-        ▶ Start
-    </button>
-
-    <button id="resetButton" class="reset-button">
-        ↻ Reset
-    </button>
-
-</div>
-
-    <p class="session-count" id="sessionProgress">
-    Session 1 of 4
-</p>
-
-</section>
-
-
-        <section class="todo-section">
-
-    <h2>Tasks</h2>
-
-    <div class="date-nav" id="dateNav">
-        <button id="prevDateButton" class="date-nav-button" aria-label="Previous day">‹</button>
-        <button id="dateLabel" class="date-label" title="Jump to today">Today</button>
-        <button id="nextDateButton" class="date-nav-button" aria-label="Next day">›</button>
-    </div>
-
-    <div class="task-list" id="taskList">
-        <!-- Tasks will be created dynamically -->
-    </div>
-
-    <div class="add-task-container">
-
-        <input
-            type="text"
-            id="taskInput"
-            placeholder="What do you need to do?"
-        >
-
-        <button id="addTaskButton">
-            + Add task
+    <!-- ============ MOBILE BOTTOM NAV ============ -->
+    <nav class="bottom-nav">
+        <button class="bottom-nav-item active" id="bottomNavHome">
+            <span>🏠</span>Home
         </button>
-
-    </div>
-
-</section>
-
-<button
-    id="ambienceButton"
-    class="ambience-button"
-    aria-label="Open ambience"
->
-    🌿
-</button>
-
-<button
-    id="stickyNotesButton"
-    class="sticky-notes-button"
-    aria-label="Open sticky notes"
->
-    🗒️
-</button>
-
-<div id="stickyNotesContainer"></div>
-
-<button
-    id="settingsButton"
-    class="settings-button"
-    aria-label="Open timer settings"
->
-    ⚙️
-</button>
-
-
-<section
-    id="settingsPanel"
-    class="settings-panel"
->
-
-    <div class="settings-header">
-
-        <h2>Timer Settings</h2>
-
-        <button
-            id="closeSettingsButton"
-            class="close-settings-button"
-            aria-label="Close timer settings"
-        >
-            ×
+        <button class="bottom-nav-item" id="bottomNavTasks">
+            <span>✅</span>Tasks
         </button>
-
-    </div>
-
-
-    <div class="setting">
-
-        <label for="focusDuration">
-            Focus duration
-        </label>
-
-        <input
-            type="number"
-            id="focusDuration"
-            min="1"
-            value="25"
-        >
-
-        <span>minutes</span>
-
-    </div>
-
-
-    <div class="setting">
-
-        <label for="shortBreakDuration">
-            Short break
-        </label>
-
-        <input
-            type="number"
-            id="shortBreakDuration"
-            min="1"
-            value="5"
-        >
-
-        <span>minutes</span>
-
-    </div>
-
-
-    <div class="setting">
-
-        <label for="longBreakDuration">
-            Long break
-        </label>
-
-        <input
-            type="number"
-            id="longBreakDuration"
-            min="1"
-            value="15"
-        >
-
-        <span>minutes</span>
-
-    </div>
-
-
-    <div class="setting">
-
-        <label for="sessionsUntilLongBreak">
-            Sessions until long break
-        </label>
-
-        <input
-            type="number"
-            id="sessionsUntilLongBreak"
-            min="1"
-            value="4"
-        >
-
-        <span>sessions</span>
-
-    </div>
-
-
-    <button
-        id="saveSettingsButton"
-        class="save-settings-button"
-    >
-        Save Settings
-    </button>
-
-</section>
-
-</section> <!-- settingsPanel -->
-
-<button
-    id="accountButton"
-    class="account-button"
-    aria-label="Account"
->
-    👤
-</button>
-
-<section
-    id="authPanel"
-    class="auth-panel"
->
-    <div class="auth-header">
-        <h2 id="authTitle">Log In</h2>
-        <button id="closeAuthButton" class="close-auth-button" aria-label="Close">×</button>
-    </div>
-
-    <div id="authLoggedOutView">
-
-        <p id="authError" class="auth-error"></p>
-
-        <input type="email" id="authEmail" class="auth-input" placeholder="Email">
-        <input type="password" id="authPassword" class="auth-input" placeholder="Password (min 8 characters)">
-
-        <button id="authSubmitButton" class="auth-submit-button">Log In</button>
-
-        <p class="auth-toggle">
-            <span id="authToggleText">Don't have an account?</span>
-            <button id="authToggleButton" class="auth-toggle-button">Sign up</button>
-        </p>
-
-        <p class="auth-note">Tasks stay on this device until you log in. Once logged in, they sync across devices.</p>
-    </div>
-
-    <div id="authLoggedInView" class="auth-logged-in-view">
-        <p>Signed in as <strong id="authUserEmail"></strong></p>
-        <button id="logoutButton" class="auth-submit-button">Log Out</button>
-    </div>
-
-</section>
-
-<section
-    id="ambiencePanel"
-    class="ambience-panel"
->
-
-    <div class="ambience-header">
-
-        <h2>Ambience</h2>
-
-        <button
-            id="closeAmbienceButton"
-            class="close-ambience-button"
-            aria-label="Close ambience"
-        >
-            ×
+        <button class="bottom-nav-item" id="bottomNavAmbience">
+            <span>🎧</span>Ambience
         </button>
+        <button class="bottom-nav-item" id="bottomNavNotes">
+            <span>📝</span>Notes
+        </button>
+        <button class="bottom-nav-item" id="bottomNavMore">
+            <span>⋯</span>More
+        </button>
+    </nav>
 
-    </div>
+    <main class="dashboard">
 
-    <div
-        id="ambienceList"
-        class="ambience-list"
-    ></div>
+        <!-- ============ FOCUS CARD ============ -->
+        <section class="focus-card" id="focusCard">
 
-</section>
+            <div class="card-drag-handle" title="Drag to move, double-click to reset">⠿</div>
+
+            <!-- TIMER VIEW -->
+            <div class="card-view active" id="timerView">
+
+                <div class="task-select-row">
+                    <label for="activeTaskSelect" class="task-select-label">What are you working on?</label>
+                    <select id="activeTaskSelect" class="task-select">
+                        <option value="">No task selected</option>
+                    </select>
+                </div>
+
+                <div class="progress-ring-wrap">
+
+                    <svg viewBox="0 0 220 220" class="progress-ring">
+                        <circle class="ring-track" cx="110" cy="110" r="96"></circle>
+                        <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="96"></circle>
+                    </svg>
+
+                    <div class="timer-center">
+                        <div class="timer" id="timer">25:00</div>
+                        <p class="session-type" id="sessionType">Focus</p>
+                    </div>
+
+                </div>
+
+                <div class="timer-controls">
+                    <button id="startButton" class="btn-primary btn-lg">▶ Start Focus</button>
+                    <button id="resetButton" class="btn-ghost">↻ Reset</button>
+                </div>
+
+                <div class="session-dots" id="sessionDots"></div>
+
+                <p class="session-count" id="sessionProgress">Session 1 of 4</p>
+
+            </div>
+
+            <!-- SESSION COMPLETE VIEW -->
+            <div class="card-view" id="completeView">
+
+                <div class="complete-icon">🌱</div>
+
+                <h2 class="complete-title">Session Complete!</h2>
+                <p class="complete-sub">Great work! 🎉</p>
+                <p class="complete-detail">You focused for <strong id="completedMinutes">25</strong> minutes.</p>
+
+                <div class="quote-box">"Progress, not perfection. Keep going!"</div>
+
+                <div class="complete-actions">
+                    <button id="takeBreakButton" class="btn-primary">Take a Break</button>
+                    <button id="startNextButton" class="btn-secondary">Start Next Session</button>
+                </div>
+
+            </div>
+
+            <!-- BREAK INTRO VIEW -->
+            <div class="card-view" id="breakIntroView">
+
+                <div class="break-hero"></div>
+
+                <h2 class="complete-title">Time for a Break</h2>
+                <p class="complete-sub">You've earned this! 🌱</p>
+
+                <div class="timer break-preview-timer" id="breakPreviewTimer">05:00</div>
+
+                <ul class="break-suggestions">
+                    <li><label><input type="radio" name="breakSuggestion" checked> Take a short walk</label></li>
+                    <li><label><input type="radio" name="breakSuggestion"> Drink some water</label></li>
+                    <li><label><input type="radio" name="breakSuggestion"> Stretch</label></li>
+                    <li><label><input type="radio" name="breakSuggestion"> Look away from your screen</label></li>
+                </ul>
+
+                <div class="complete-actions">
+                    <button id="startBreakButton" class="btn-primary">▶ Start Break</button>
+                    <button id="skipBreakButton" class="btn-secondary">Skip</button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ============ TASKS CARD ============ -->
+        <section class="tasks-card" id="tasksCard">
+
+            <div class="card-drag-handle" title="Drag to move, double-click to reset">⠿</div>
+
+            <div class="tasks-header">
+                <h2>Today</h2>
+                <button id="addTaskHeaderButton" class="btn-primary btn-sm">+ Add task</button>
+            </div>
+
+            <div class="date-nav" id="dateNav">
+                <button id="prevDateButton" class="date-nav-button" aria-label="Previous day">‹</button>
+                <button id="dateLabel" class="date-label" title="Jump to today">Today</button>
+                <button id="nextDateButton" class="date-nav-button" aria-label="Next day">›</button>
+            </div>
+
+            <div class="task-list" id="taskList"></div>
+
+            <div class="add-task-container">
+                <input type="text" id="taskInput" placeholder="What do you need to do?">
+                <button id="addTaskButton">+ Add task</button>
+            </div>
+
+            <div class="quote-box small">🌱 "Small steps every day lead to big progress."</div>
+
+        </section>
 
     </main>
 
+    <!-- ============ AMBIENCE MODAL ============ -->
+    <div class="modal-overlay" id="ambienceOverlay">
+        <div class="modal-panel ambience-modal">
+
+            <div class="modal-header">
+                <div class="modal-header-icon">🎧</div>
+                <div>
+                    <h2>Ambience</h2>
+                    <p class="modal-subtitle">Set the mood for your focus session.</p>
+                </div>
+                <button class="modal-close" id="closeAmbienceButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" id="tabEnvironments">🌿 Environments</button>
+                <button class="tab" id="tabCustomMix">🎚️ Custom Mix</button>
+            </div>
+
+            <div id="environmentsSection">
+                <p class="section-label">Focus Environments <span>Pick a preset and get started instantly.</span></p>
+                <div class="ambience-list" id="ambienceList"></div>
+            </div>
+
+            <div class="volume-row">
+                <span class="volume-icon">🔊</span>
+                <div class="volume-info">
+                    <span class="volume-label">Master Volume</span>
+                    <span class="volume-sub">Control the overall ambience volume.</span>
+                </div>
+                <input type="range" id="masterVolume" min="0" max="100" value="70" class="sound-volume">
+                <span class="volume-value" id="masterVolumeValue">70%</span>
+            </div>
+
+            <div class="sounds-section">
+                <div class="sounds-section-header">
+                    <span class="section-label">Active Sounds <span>Adjust individual sounds or turn them on/off.</span></span>
+                    <button class="link-button" id="clearAllSounds">Clear All</button>
+                </div>
+
+                <div id="soundsList" class="sounds-list"></div>
+
+                <div class="sounds-footer">
+                    <button class="btn-ghost btn-sm" id="addAnotherSound">+ Add another sound</button>
+                    <button class="btn-primary btn-sm" id="playAllSounds">▶ Play All</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============ SETTINGS MODAL ============ -->
+    <div class="modal-overlay" id="settingsOverlay">
+        <div class="modal-panel settings-modal">
+
+            <div class="modal-header">
+                <div class="modal-header-icon">⚙️</div>
+                <div>
+                    <h2>Focus Settings</h2>
+                    <p class="modal-subtitle">Customize your rhythm.</p>
+                </div>
+                <button class="modal-close" id="closeSettingsButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-icon setting-icon-orange">☀️</span>
+                <div class="setting-info">
+                    <span class="setting-name">Focus duration</span>
+                    <span class="setting-desc">How long do you want to focus?</span>
+                </div>
+                <div class="stepper">
+                    <button class="stepper-btn" data-target="focusDuration" data-dir="-1">−</button>
+                    <input type="number" id="focusDuration" min="1" value="25" readonly>
+                    <button class="stepper-btn" data-target="focusDuration" data-dir="1">+</button>
+                </div>
+                <span class="setting-unit">minutes</span>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-icon setting-icon-pink">🍵</span>
+                <div class="setting-info">
+                    <span class="setting-name">Short break</span>
+                    <span class="setting-desc">A quick recharge.</span>
+                </div>
+                <div class="stepper">
+                    <button class="stepper-btn" data-target="shortBreakDuration" data-dir="-1">−</button>
+                    <input type="number" id="shortBreakDuration" min="1" value="5" readonly>
+                    <button class="stepper-btn" data-target="shortBreakDuration" data-dir="1">+</button>
+                </div>
+                <span class="setting-unit">minutes</span>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-icon setting-icon-blue">🌙</span>
+                <div class="setting-info">
+                    <span class="setting-name">Long break</span>
+                    <span class="setting-desc">A longer rest.</span>
+                </div>
+                <div class="stepper">
+                    <button class="stepper-btn" data-target="longBreakDuration" data-dir="-1">−</button>
+                    <input type="number" id="longBreakDuration" min="1" value="15" readonly>
+                    <button class="stepper-btn" data-target="longBreakDuration" data-dir="1">+</button>
+                </div>
+                <span class="setting-unit">minutes</span>
+            </div>
+
+            <div class="setting-row">
+                <span class="setting-icon setting-icon-flame">🔥</span>
+                <div class="setting-info">
+                    <span class="setting-name">Sessions before long break</span>
+                    <span class="setting-desc">How many focus sessions?</span>
+                </div>
+                <div class="stepper">
+                    <button class="stepper-btn" data-target="sessionsUntilLongBreak" data-dir="-1">−</button>
+                    <input type="number" id="sessionsUntilLongBreak" min="1" value="4" readonly>
+                    <button class="stepper-btn" data-target="sessionsUntilLongBreak" data-dir="1">+</button>
+                </div>
+                <span class="setting-unit">sessions</span>
+            </div>
+
+            <div class="settings-footer">
+                <button class="btn-ghost" id="resetSettingsButton">↻ Reset to defaults</button>
+                <button class="btn-primary" id="saveSettingsButton">Save Changes</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============ NOTES MODAL ============ -->
+    <div class="modal-overlay" id="notesOverlay">
+        <div class="modal-panel notes-modal">
+
+            <div class="modal-header">
+                <div class="modal-header-icon">📝</div>
+                <div>
+                    <h2>Notes</h2>
+                    <p class="modal-subtitle">Capture your thoughts, ideas and reminders.</p>
+                </div>
+                <button class="btn-primary btn-sm" id="newNoteButton" style="margin-left:auto;">+ New Note</button>
+                <button class="modal-close" id="closeNotesButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="notes-grid" id="notesGrid"></div>
+
+        </div>
+    </div>
+
+    <!-- ============ ACCOUNT MODAL ============ -->
+    <div class="modal-overlay" id="authOverlay">
+        <div class="modal-panel auth-modal">
+
+            <button class="modal-close" id="closeAuthButton" aria-label="Close">×</button>
+
+            <div id="authLoggedOutView">
+
+                <div class="auth-brand">
+                    <span class="brand-leaf">🌱</span>
+                    <div class="brand-name">FocusNest</div>
+                    <p class="brand-tag">Your little space to focus.</p>
+                </div>
+
+                <div class="auth-tabs">
+                    <button class="auth-tab active" id="authTabLogin">Log In</button>
+                    <button class="auth-tab" id="authTabSignup">Sign Up</button>
+                </div>
+
+                <p id="authError" class="auth-error"></p>
+
+                <div class="auth-field">
+                    <span class="auth-field-icon">✉️</span>
+                    <input type="email" id="authEmail" class="auth-input" placeholder="you@example.com">
+                </div>
+
+                <div class="auth-field">
+                    <span class="auth-field-icon">🔒</span>
+                    <input type="password" id="authPassword" class="auth-input" placeholder="Password (min 8 characters)">
+                </div>
+
+                <button id="authSubmitButton" class="btn-primary btn-block">Log In</button>
+
+                <div class="auth-divider"><span>or continue with</span></div>
+
+                <div class="auth-social-row">
+                    <button class="auth-social-button" id="googleAuthButton">🔵 Google</button>
+                    <button class="auth-social-button" id="microsoftAuthButton">🟦 Microsoft</button>
+                </div>
+
+                <p class="auth-toggle">
+                    <span id="authToggleText">New here?</span>
+                    <button id="authToggleButton" class="auth-toggle-button">Create an account</button>
+                </p>
+
+                <p class="auth-note">Tasks stay on this device until you log in. Once logged in, they sync across devices.</p>
+            </div>
+
+            <div id="authLoggedInView" class="auth-logged-in-view">
+                <div class="auth-brand">
+                    <span class="brand-leaf">🌱</span>
+                    <div class="brand-name">Welcome back!</div>
+                </div>
+                <p>Signed in as <strong id="authUserEmail"></strong></p>
+                <button id="logoutButton" class="btn-primary btn-block">Log Out</button>
+            </div>
+
+        </div>
+    </div>
+
+    <button id="stickyNotesButton" class="sticky-notes-button" aria-label="Open sticky notes">🗒️</button>
+    <div id="stickyNotesContainer"></div>
 
     <script src="script.js"></script>
-
 
 </body>
 </html>
