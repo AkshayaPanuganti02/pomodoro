@@ -240,7 +240,7 @@ const ambiences = [
         name: "Rainy Day",
         sub: "Stay cozy indoors",
         type: "video",
-        source: "assets/ambience/rainy-room.mp4"
+        source: "../assets/ambience/rainy-room.mp4"
     },
 
     {
@@ -248,7 +248,7 @@ const ambiences = [
         name: "Forest",
         sub: "Nature's calm",
         type: "video",
-        source: "assets/ambience/forest.mp4"
+        source: "../assets/ambience/forest.mp4"
     },
 
     {
@@ -414,7 +414,7 @@ const ambienceSounds = [
         name: "Rain",
         sub: "Gentle rain on a window",
         icon: "🌧️",
-        source: "assets/sounds/rain.mp3"
+        source: "../assets/sounds/rain.mp3"
     },
 
     {
@@ -422,7 +422,7 @@ const ambienceSounds = [
         name: "Walking",
         sub: "Soft footsteps",
         icon: "🚶",
-        source: "assets/sounds/walking.mp3"
+        source: "../assets/sounds/walking.mp3"
     }
 ];
 
