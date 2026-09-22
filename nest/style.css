@@ -756,6 +756,48 @@ button {
     font-size: 16px;
 }
 
+.calendar-pick-button {
+    border: none;
+
+    background: transparent;
+
+    color: var(--color-text-muted);
+
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+    margin-left: 2px;
+}
+
+.calendar-pick-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.hidden-date-input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    padding: 0;
+
+    margin: -1px;
+
+    overflow: hidden;
+
+    clip: rect(0, 0, 0, 0);
+
+    white-space: nowrap;
+
+    border: 0;
+}
+
 .date-label {
     border: none;
 
@@ -1849,6 +1891,497 @@ button {
 
 .auth-logged-in-view p {
     margin: 10px 0 18px;
+}
+
+
+/* =========================================================
+   MORE TOOLS (floating hub button)
+========================================================= */
+
+.more-tools-button {
+    position: fixed;
+
+    bottom: 150px;
+    right: 25px;
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: var(--color-card);
+
+    color: var(--color-primary-dark);
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    box-shadow: var(--shadow-card);
+
+    border: 1.5px solid var(--color-border);
+
+    z-index: 150;
+}
+
+.more-tools-grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+}
+
+.more-tool-card {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 4px;
+
+    text-align: left;
+
+    padding: 18px 16px;
+
+    border-radius: var(--radius-md);
+
+    border: 1.5px solid var(--color-border);
+
+    background: #fafaf8;
+
+    cursor: pointer;
+
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.more-tool-card:hover {
+    border-color: var(--color-primary);
+
+    transform: translateY(-2px);
+}
+
+.more-tool-icon {
+    font-size: 24px;
+
+    margin-bottom: 4px;
+}
+
+.more-tool-name {
+    font-weight: 700;
+
+    font-size: 14px;
+}
+
+.more-tool-desc {
+    font-size: 12px;
+
+    color: var(--color-text-muted);
+}
+
+
+/* =========================================================
+   SHARED TOOL MODAL STYLES
+========================================================= */
+
+.tool-modal {
+    max-width: 480px;
+}
+
+.tool-back-button {
+    border: none;
+
+    background: transparent;
+
+    color: var(--color-text-muted);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    padding: 0;
+
+    margin-right: 4px;
+
+    align-self: center;
+
+    white-space: nowrap;
+}
+
+.tool-back-button:hover {
+    color: var(--color-primary-dark);
+}
+
+.tool-total-banner {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    background: var(--color-primary-light);
+
+    color: var(--color-primary-dark);
+
+    border-radius: var(--radius-md);
+
+    padding: 14px 18px;
+
+    font-weight: 700;
+
+    margin-bottom: 18px;
+}
+
+.tool-total-banner span:last-child {
+    font-size: 18px;
+}
+
+.tool-total-banner.warning {
+    background: #fdeaea;
+
+    color: var(--color-text);
+}
+
+.tool-add-row {
+    display: flex;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+}
+
+.tool-add-row input[type="text"] {
+    flex: 2;
+}
+
+.tool-add-row input[type="number"] {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.tool-add-row input {
+    padding: 10px 12px;
+
+    border-radius: var(--radius-sm);
+
+    border: 1.5px solid var(--color-border);
+
+    font-size: 14px;
+}
+
+.tool-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    max-height: 300px;
+
+    overflow-y: auto;
+}
+
+.tool-list-empty {
+    text-align: center;
+
+    color: var(--color-text-muted);
+
+    font-size: 13px;
+
+    padding: 20px 0;
+}
+
+.tool-list-item {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 10px 12px;
+
+    border-radius: var(--radius-sm);
+
+    background: #fafaf8;
+
+    border: 1px solid var(--color-border);
+}
+
+.tool-list-item-title {
+    flex: 1;
+
+    font-size: 14px;
+}
+
+.tool-list-item-amount {
+    font-weight: 700;
+
+    font-size: 14px;
+}
+
+.tool-list-item-delete {
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+    color: var(--color-text-muted);
+}
+
+
+/* =========================================================
+   KAKEIBO
+========================================================= */
+
+.kakeibo-summary-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    margin-bottom: 16px;
+}
+
+.kakeibo-summary-field label {
+    display: block;
+
+    font-size: 12px;
+
+    color: var(--color-text-muted);
+
+    margin-bottom: 4px;
+}
+
+.kakeibo-summary-field input {
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border-radius: var(--radius-sm);
+
+    border: 1.5px solid var(--color-border);
+
+    font-size: 14px;
+}
+
+.kakeibo-categories {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+.kakeibo-category {
+    border: 1.5px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    padding: 14px;
+}
+
+.kakeibo-category-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+
+.kakeibo-category-name {
+    font-weight: 700;
+
+    font-size: 14px;
+}
+
+.kakeibo-category-total {
+    font-size: 13px;
+
+    color: var(--color-text-muted);
+}
+
+.kakeibo-reflection label {
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    margin-bottom: 6px;
+}
+
+.kakeibo-reflection textarea {
+    width: 100%;
+
+    min-height: 80px;
+
+    padding: 10px 12px;
+
+    border-radius: var(--radius-sm);
+
+    border: 1.5px solid var(--color-border);
+
+    font-family: var(--font-body);
+
+    font-size: 13px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   DIARY
+========================================================= */
+
+.diary-mood-row {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin: 6px 0 16px;
+}
+
+.diary-mood-button {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    border: 2px solid transparent;
+
+    background: #fafaf8;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+.diary-mood-button.selected {
+    border-color: var(--color-primary);
+
+    background: var(--color-primary-light);
+}
+
+.diary-textarea {
+    width: 100%;
+
+    min-height: 200px;
+
+    padding: 14px;
+
+    border-radius: var(--radius-md);
+
+    border: 1.5px solid var(--color-border);
+
+    font-family: var(--font-body);
+
+    font-size: 14px;
+
+    resize: vertical;
+}
+
+
+/* =========================================================
+   HABIT TRACKER
+========================================================= */
+
+.habit-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    max-height: 360px;
+
+    overflow-y: auto;
+}
+
+.habit-item {
+    padding: 12px 14px;
+
+    border-radius: var(--radius-md);
+
+    border: 1.5px solid var(--color-border);
+
+    background: #fafaf8;
+}
+
+.habit-item-top {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+}
+
+.habit-name {
+    flex: 1;
+
+    font-weight: 700;
+
+    font-size: 14px;
+}
+
+.habit-streak {
+    font-size: 12px;
+
+    color: var(--color-text-muted);
+}
+
+.habit-days {
+    display: flex;
+
+    gap: 6px;
+}
+
+.habit-day {
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    border: 1.5px solid var(--color-border);
+
+    background: white;
+
+    font-size: 10px;
+
+    color: var(--color-text-muted);
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.habit-day.done {
+    background: var(--color-primary);
+
+    border-color: var(--color-primary);
+
+    color: white;
 }
 
 

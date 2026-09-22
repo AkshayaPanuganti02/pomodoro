@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>FocusNest</title>
+    <title>FocusPenguin</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
@@ -20,9 +20,9 @@
     <header class="topnav">
 
         <div class="brand">
-            <span class="brand-leaf">🌱</span>
+            <span class="brand-leaf">🐧</span>
             <div>
-                <div class="brand-name">FocusNest</div>
+                <div class="brand-name">FocusPenguin</div>
                 <div class="brand-tag">Your little space to focus</div>
             </div>
         </div>
@@ -100,7 +100,7 @@
             <!-- SESSION COMPLETE VIEW -->
             <div class="card-view" id="completeView">
 
-                <div class="complete-icon">🌱</div>
+                <div class="complete-icon">🐧</div>
 
                 <h2 class="complete-title">Session Complete!</h2>
                 <p class="complete-sub">Great work! 🎉</p>
@@ -153,6 +153,8 @@
                 <button id="prevDateButton" class="date-nav-button" aria-label="Previous day">‹</button>
                 <button id="dateLabel" class="date-label" title="Jump to today">Today</button>
                 <button id="nextDateButton" class="date-nav-button" aria-label="Next day">›</button>
+                <button id="openTaskCalendarButton" class="calendar-pick-button" aria-label="Pick a date">📅</button>
+                <input type="date" id="taskCalendarInput" class="hidden-date-input">
             </div>
 
             <div class="task-list" id="taskList"></div>
@@ -323,8 +325,8 @@
             <div id="authLoggedOutView">
 
                 <div class="auth-brand">
-                    <span class="brand-leaf">🌱</span>
-                    <div class="brand-name">FocusNest</div>
+                    <span class="brand-leaf">🐧</span>
+                    <div class="brand-name">FocusPenguin</div>
                     <p class="brand-tag">Your little space to focus.</p>
                 </div>
 
@@ -364,7 +366,7 @@
 
             <div id="authLoggedInView" class="auth-logged-in-view">
                 <div class="auth-brand">
-                    <span class="brand-leaf">🌱</span>
+                    <span class="brand-leaf">🐧</span>
                     <div class="brand-name">Welcome back!</div>
                 </div>
                 <p>Signed in as <strong id="authUserEmail"></strong></p>
@@ -374,8 +376,185 @@
         </div>
     </div>
 
+    <button id="moreToolsButton" class="more-tools-button" aria-label="Open more tools">🧰</button>
+
     <button id="stickyNotesButton" class="sticky-notes-button" aria-label="Open sticky notes">🗒️</button>
     <div id="stickyNotesContainer"></div>
+
+    <!-- ============ MORE TOOLS HUB ============ -->
+    <div class="modal-overlay" id="moreToolsOverlay">
+        <div class="modal-panel">
+
+            <div class="modal-header">
+                <div class="modal-header-icon">🧰</div>
+                <div>
+                    <h2>More Tools</h2>
+                    <p class="modal-subtitle">Extra little helpers for your day.</p>
+                </div>
+                <button class="modal-close" id="closeMoreToolsButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="more-tools-grid">
+
+                <button class="more-tool-card" id="openExpenseTracker">
+                    <span class="more-tool-icon">💰</span>
+                    <span class="more-tool-name">Expense Tracker</span>
+                    <span class="more-tool-desc">Log spending, see your total</span>
+                </button>
+
+                <button class="more-tool-card" id="openKakeibo">
+                    <span class="more-tool-icon">📔</span>
+                    <span class="more-tool-name">Kakeibo</span>
+                    <span class="more-tool-desc">Japanese mindful budgeting</span>
+                </button>
+
+                <button class="more-tool-card" id="openDiary">
+                    <span class="more-tool-icon">📓</span>
+                    <span class="more-tool-name">Diary</span>
+                    <span class="more-tool-desc">A private note for today</span>
+                </button>
+
+                <button class="more-tool-card" id="openHabitTracker">
+                    <span class="more-tool-icon">✅</span>
+                    <span class="more-tool-name">Habit Tracker</span>
+                    <span class="more-tool-desc">Build a streak, one day at a time</span>
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============ EXPENSE TRACKER ============ -->
+    <div class="modal-overlay" id="expenseOverlay">
+        <div class="modal-panel tool-modal">
+
+            <div class="modal-header">
+                <button class="tool-back-button" data-back="moreToolsOverlay">← More</button>
+                <div class="modal-header-icon">💰</div>
+                <div>
+                    <h2>Expense Tracker</h2>
+                    <p class="modal-subtitle">A simple running log of your spending.</p>
+                </div>
+                <button class="modal-close" id="closeExpenseButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="tool-total-banner">
+                <span>Total spent</span>
+                <span id="expenseTotal">₹0</span>
+            </div>
+
+            <div class="tool-add-row">
+                <input type="text" id="expenseDescInput" placeholder="What did you spend on?">
+                <input type="number" id="expenseAmountInput" placeholder="Amount" min="0">
+                <button class="btn-primary btn-sm" id="addExpenseButton">+ Add</button>
+            </div>
+
+            <div id="expenseList" class="tool-list"></div>
+
+        </div>
+    </div>
+
+    <!-- ============ KAKEIBO ============ -->
+    <div class="modal-overlay" id="kakeiboOverlay">
+        <div class="modal-panel tool-modal">
+
+            <div class="modal-header">
+                <button class="tool-back-button" data-back="moreToolsOverlay">← More</button>
+                <div class="modal-header-icon">📔</div>
+                <div>
+                    <h2>Kakeibo</h2>
+                    <p class="modal-subtitle">Mindful budgeting: Needs, Wants, Culture, Unexpected.</p>
+                </div>
+                <button class="modal-close" id="closeKakeiboButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="date-nav" id="kakeiboMonthNav">
+                <button id="kakeiboPrevMonthButton" class="date-nav-button" aria-label="Previous month">‹</button>
+                <button id="kakeiboMonthLabel" class="date-label" title="Jump to this month">This month</button>
+                <button id="kakeiboNextMonthButton" class="date-nav-button" aria-label="Next month">›</button>
+                <button id="openKakeiboCalendarButton" class="calendar-pick-button" aria-label="Pick a month">📅</button>
+                <input type="month" id="kakeiboCalendarInput" class="hidden-date-input">
+            </div>
+
+            <div class="kakeibo-summary-row">
+                <div class="kakeibo-summary-field">
+                    <label for="kakeiboIncome">Monthly income</label>
+                    <input type="number" id="kakeiboIncome" min="0" placeholder="0">
+                </div>
+                <div class="kakeibo-summary-field">
+                    <label for="kakeiboSavingsGoal">Savings goal</label>
+                    <input type="number" id="kakeiboSavingsGoal" min="0" placeholder="0">
+                </div>
+            </div>
+
+            <div class="tool-total-banner" id="kakeiboRemainingBanner">
+                <span>Remaining after spending</span>
+                <span id="kakeiboRemaining">₹0</span>
+            </div>
+
+            <div id="kakeiboCategories" class="kakeibo-categories"></div>
+
+            <div class="kakeibo-reflection">
+                <label for="kakeiboReflection">Monthly reflection</label>
+                <textarea id="kakeiboReflection" placeholder="How did this month go? What would you change?"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============ DIARY ============ -->
+    <div class="modal-overlay" id="diaryOverlay">
+        <div class="modal-panel tool-modal">
+
+            <div class="modal-header">
+                <button class="tool-back-button" data-back="moreToolsOverlay">← More</button>
+                <div class="modal-header-icon">📓</div>
+                <div>
+                    <h2>Diary</h2>
+                    <p class="modal-subtitle">A private note for how today went.</p>
+                </div>
+                <button class="modal-close" id="closeDiaryButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="date-nav" id="diaryDateNav">
+                <button id="diaryPrevDateButton" class="date-nav-button" aria-label="Previous day">‹</button>
+                <button id="diaryDateLabel" class="date-label" title="Jump to today">Today</button>
+                <button id="diaryNextDateButton" class="date-nav-button" aria-label="Next day">›</button>
+                <button id="openDiaryCalendarButton" class="calendar-pick-button" aria-label="Pick a date">📅</button>
+                <input type="date" id="diaryCalendarInput" class="hidden-date-input">
+            </div>
+
+            <div class="diary-mood-row" id="diaryMoodRow"></div>
+
+            <textarea id="diaryTextArea" class="diary-textarea" placeholder="What happened today? How are you feeling?"></textarea>
+
+        </div>
+    </div>
+
+    <!-- ============ HABIT TRACKER ============ -->
+    <div class="modal-overlay" id="habitOverlay">
+        <div class="modal-panel tool-modal">
+
+            <div class="modal-header">
+                <button class="tool-back-button" data-back="moreToolsOverlay">← More</button>
+                <div class="modal-header-icon">✅</div>
+                <div>
+                    <h2>Habit Tracker</h2>
+                    <p class="modal-subtitle">Build a streak, one day at a time.</p>
+                </div>
+                <button class="modal-close" id="closeHabitButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="tool-add-row">
+                <input type="text" id="habitNameInput" placeholder="New habit (e.g. Drink water)">
+                <button class="btn-primary btn-sm" id="addHabitButton">+ Add</button>
+            </div>
+
+            <div id="habitList" class="habit-list"></div>
+
+        </div>
+    </div>
 
     <script src="script.js"></script>
 

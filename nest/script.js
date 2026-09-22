@@ -110,6 +110,25 @@ const API_BASE_URL = "https://pomodoro-xjlu.onrender.com/api";
 // GENERIC MODAL HELPERS
 // =========================================================
 
+function openNativePicker(inputElement) {
+
+    // showPicker() is the modern, reliable way to open a native date/month
+    // picker programmatically (Chrome, Edge, newer Firefox). Older browsers
+    // fall back to focusing + clicking the (visually hidden) input, which
+    // still opens the OS/browser's calendar UI on most platforms.
+    if (typeof inputElement.showPicker === "function") {
+        try {
+            inputElement.showPicker();
+            return;
+        } catch (error) {
+            // fall through to the fallback below
+        }
+    }
+
+    inputElement.focus();
+    inputElement.click();
+}
+
 function openModal(overlay) {
     overlay.classList.add("open");
 }
@@ -1163,6 +1182,24 @@ dateLabelElement.addEventListener("click", function() {
     renderTasks();
 });
 
+const openTaskCalendarButton = document.getElementById("openTaskCalendarButton");
+const taskCalendarInput = document.getElementById("taskCalendarInput");
+
+openTaskCalendarButton.addEventListener("click", function() {
+    taskCalendarInput.value = dateState.selectedDate;
+    openNativePicker(taskCalendarInput);
+});
+
+taskCalendarInput.addEventListener("change", function() {
+
+    if (!taskCalendarInput.value) {
+        return;
+    }
+
+    dateState.selectedDate = taskCalendarInput.value;
+    renderTasks();
+});
+
 
 // =========================================================
 // TIMER — VIEW SWITCHING (timer / complete / break intro)
@@ -1577,6 +1614,633 @@ stickyNotesButton.addEventListener("click", addStickyNote);
 
 
 // =========================================================
+// MORE TOOLS — hub
+// =========================================================
+
+const moreToolsButton = document.getElementById("moreToolsButton");
+const moreToolsOverlay = document.getElementById("moreToolsOverlay");
+const closeMoreToolsButton = document.getElementById("closeMoreToolsButton");
+
+const TOOL_OVERLAY_IDS = ["expenseOverlay", "kakeiboOverlay", "diaryOverlay", "habitOverlay"];
+
+moreToolsButton.addEventListener("click", function() {
+    openModal(moreToolsOverlay);
+});
+
+closeMoreToolsButton.addEventListener("click", function() {
+    closeModal(moreToolsOverlay);
+});
+
+moreToolsOverlay.addEventListener("click", function(event) {
+    if (event.target === moreToolsOverlay) {
+        closeModal(moreToolsOverlay);
+    }
+});
+
+document.querySelectorAll(".tool-back-button").forEach(button => {
+
+    button.addEventListener("click", function() {
+
+        const currentOverlay = button.closest(".modal-overlay");
+        const backOverlay = document.getElementById(button.dataset.back);
+
+        closeModal(currentOverlay);
+        openModal(backOverlay);
+    });
+});
+
+function openTool(overlayId) {
+    closeModal(moreToolsOverlay);
+    openModal(document.getElementById(overlayId));
+}
+
+document.getElementById("openExpenseTracker").addEventListener("click", () => openTool("expenseOverlay"));
+document.getElementById("openKakeibo").addEventListener("click", () => openTool("kakeiboOverlay"));
+document.getElementById("openDiary").addEventListener("click", () => openTool("diaryOverlay"));
+document.getElementById("openHabitTracker").addEventListener("click", () => openTool("habitOverlay"));
+
+TOOL_OVERLAY_IDS.forEach(id => {
+
+    const overlay = document.getElementById(id);
+
+    overlay.addEventListener("click", function(event) {
+        if (event.target === overlay) {
+            closeModal(overlay);
+        }
+    });
+});
+
+document.getElementById("closeExpenseButton").addEventListener("click", () => closeModal(document.getElementById("expenseOverlay")));
+document.getElementById("closeKakeiboButton").addEventListener("click", () => closeModal(document.getElementById("kakeiboOverlay")));
+document.getElementById("closeDiaryButton").addEventListener("click", () => closeModal(document.getElementById("diaryOverlay")));
+document.getElementById("closeHabitButton").addEventListener("click", () => closeModal(document.getElementById("habitOverlay")));
+
+
+// =========================================================
+// EXPENSE TRACKER
+// =========================================================
+
+const EXPENSES_STORAGE_KEY = "pomodoro.expenses";
+
+const expenseDescInput = document.getElementById("expenseDescInput");
+const expenseAmountInput = document.getElementById("expenseAmountInput");
+const addExpenseButton = document.getElementById("addExpenseButton");
+const expenseList = document.getElementById("expenseList");
+const expenseTotalElement = document.getElementById("expenseTotal");
+
+let expenses = loadJSON(EXPENSES_STORAGE_KEY, []);
+
+function loadJSON(key, fallback) {
+    try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : fallback;
+    } catch (error) {
+        return fallback;
+    }
+}
+
+function saveJSON(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+        console.error(`Could not save ${key}:`, error);
+    }
+}
+
+function formatCurrency(amount) {
+    return `₹${Number(amount).toFixed(0)}`;
+}
+
+function renderExpenses() {
+
+    expenseList.innerHTML = "";
+
+    if (expenses.length === 0) {
+        expenseList.innerHTML = `<p class="tool-list-empty">No expenses logged yet.</p>`;
+    } else {
+
+        [...expenses].reverse().forEach(expense => {
+
+            const item = document.createElement("div");
+            item.className = "tool-list-item";
+
+            item.innerHTML = `
+    <span class="tool-list-item-title">${expense.description}</span>
+    <span class="tool-list-item-amount">${formatCurrency(expense.amount)}</span>
+    <button class="tool-list-item-delete" data-id="${expense.id}">🗑️</button>
+`;
+
+            expenseList.appendChild(item);
+        });
+    }
+
+    const total = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
+    expenseTotalElement.textContent = formatCurrency(total);
+}
+
+addExpenseButton.addEventListener("click", function() {
+
+    const description = expenseDescInput.value.trim();
+    const amount = Number(expenseAmountInput.value);
+
+    if (!description || !amount || amount <= 0) {
+        return;
+    }
+
+    expenses.push({ id: Date.now(), description, amount });
+
+    saveJSON(EXPENSES_STORAGE_KEY, expenses);
+
+    expenseDescInput.value = "";
+    expenseAmountInput.value = "";
+
+    renderExpenses();
+});
+
+expenseList.addEventListener("click", function(event) {
+
+    if (!event.target.classList.contains("tool-list-item-delete")) {
+        return;
+    }
+
+    const id = Number(event.target.dataset.id);
+    expenses = expenses.filter(expense => expense.id !== id);
+
+    saveJSON(EXPENSES_STORAGE_KEY, expenses);
+    renderExpenses();
+});
+
+
+// =========================================================
+// KAKEIBO
+// =========================================================
+
+const KAKEIBO_STORAGE_KEY = "pomodoro.kakeibo";
+
+const KAKEIBO_CATEGORIES = [
+    { id: "needs", name: "Needs" },
+    { id: "wants", name: "Wants" },
+    { id: "culture", name: "Culture" },
+    { id: "unexpected", name: "Unexpected" }
+];
+
+const kakeiboIncomeInput = document.getElementById("kakeiboIncome");
+const kakeiboSavingsGoalInput = document.getElementById("kakeiboSavingsGoal");
+const kakeiboRemainingElement = document.getElementById("kakeiboRemaining");
+const kakeiboRemainingBanner = document.getElementById("kakeiboRemainingBanner");
+const kakeiboCategoriesContainer = document.getElementById("kakeiboCategories");
+const kakeiboReflectionInput = document.getElementById("kakeiboReflection");
+
+const kakeiboMonthLabel = document.getElementById("kakeiboMonthLabel");
+const kakeiboPrevMonthButton = document.getElementById("kakeiboPrevMonthButton");
+const kakeiboNextMonthButton = document.getElementById("kakeiboNextMonthButton");
+const openKakeiboCalendarButton = document.getElementById("openKakeiboCalendarButton");
+const kakeiboCalendarInput = document.getElementById("kakeiboCalendarInput");
+
+function getMonthKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+}
+
+function addMonths(monthKey, amount) {
+    const [year, month] = monthKey.split("-").map(Number);
+    const date = new Date(year, month - 1 + amount, 1);
+    return getMonthKey(date);
+}
+
+function formatMonthLabel(monthKey) {
+    const [year, month] = monthKey.split("-").map(Number);
+    const date = new Date(year, month - 1, 1);
+    const label = date.toLocaleDateString(undefined, { month: "long", year: "numeric" });
+    return monthKey === getMonthKey(new Date()) ? `${label} (this month)` : label;
+}
+
+let kakeiboData = loadJSON(KAKEIBO_STORAGE_KEY, {});
+
+// Migrate old single-budget format (no month keys) into the current month,
+// so anyone who used Kakeibo before this update doesn't lose their data.
+if (Array.isArray(kakeiboData.entries)) {
+    const legacy = kakeiboData;
+    kakeiboData = { [getMonthKey(new Date())]: legacy };
+}
+
+const kakeiboState = {
+    selectedMonth: getMonthKey(new Date())
+};
+
+function getCurrentKakeiboMonthData() {
+
+    if (!kakeiboData[kakeiboState.selectedMonth]) {
+        kakeiboData[kakeiboState.selectedMonth] = {
+            income: 0,
+            savingsGoal: 0,
+            reflection: "",
+            entries: []
+        };
+    }
+
+    return kakeiboData[kakeiboState.selectedMonth];
+}
+
+function saveKakeibo() {
+    saveJSON(KAKEIBO_STORAGE_KEY, kakeiboData);
+}
+
+function renderKakeibo() {
+
+    kakeiboMonthLabel.textContent = formatMonthLabel(kakeiboState.selectedMonth);
+
+    const monthData = getCurrentKakeiboMonthData();
+
+    kakeiboIncomeInput.value = monthData.income || "";
+    kakeiboSavingsGoalInput.value = monthData.savingsGoal || "";
+    kakeiboReflectionInput.value = monthData.reflection || "";
+
+    const totalSpent = monthData.entries.reduce((sum, entry) => sum + Number(entry.amount), 0);
+    const remaining = Number(monthData.income || 0) - totalSpent;
+
+    kakeiboRemainingElement.textContent = formatCurrency(remaining);
+
+    if (remaining < Number(monthData.savingsGoal || 0)) {
+        kakeiboRemainingBanner.classList.add("warning");
+    } else {
+        kakeiboRemainingBanner.classList.remove("warning");
+    }
+
+    kakeiboCategoriesContainer.innerHTML = "";
+
+    KAKEIBO_CATEGORIES.forEach(category => {
+
+        const categoryEntries = monthData.entries.filter(entry => entry.category === category.id);
+        const categoryTotal = categoryEntries.reduce((sum, entry) => sum + Number(entry.amount), 0);
+
+        const categoryElement = document.createElement("div");
+        categoryElement.className = "kakeibo-category";
+
+        const entriesHtml = categoryEntries.length === 0
+            ? `<p class="tool-list-empty">Nothing here yet.</p>`
+            : categoryEntries.map(entry => `
+    <div class="tool-list-item">
+        <span class="tool-list-item-title">${entry.description}</span>
+        <span class="tool-list-item-amount">${formatCurrency(entry.amount)}</span>
+        <button class="tool-list-item-delete" data-id="${entry.id}">🗑️</button>
+    </div>
+`).join("");
+
+        categoryElement.innerHTML = `
+    <div class="kakeibo-category-header">
+        <span class="kakeibo-category-name">${category.name}</span>
+        <span class="kakeibo-category-total">${formatCurrency(categoryTotal)}</span>
+    </div>
+    <div class="tool-list" data-category="${category.id}">${entriesHtml}</div>
+    <div class="tool-add-row" style="margin-top:10px;margin-bottom:0;">
+        <input type="text" class="kakeibo-desc-input" data-category="${category.id}" placeholder="Description">
+        <input type="number" class="kakeibo-amount-input" data-category="${category.id}" placeholder="Amount" min="0">
+        <button class="btn-primary btn-sm kakeibo-add-button" data-category="${category.id}">+ Add</button>
+    </div>
+`;
+
+        kakeiboCategoriesContainer.appendChild(categoryElement);
+    });
+}
+
+kakeiboPrevMonthButton.addEventListener("click", function() {
+    kakeiboState.selectedMonth = addMonths(kakeiboState.selectedMonth, -1);
+    renderKakeibo();
+});
+
+kakeiboNextMonthButton.addEventListener("click", function() {
+    kakeiboState.selectedMonth = addMonths(kakeiboState.selectedMonth, 1);
+    renderKakeibo();
+});
+
+kakeiboMonthLabel.addEventListener("click", function() {
+    kakeiboState.selectedMonth = getMonthKey(new Date());
+    renderKakeibo();
+});
+
+openKakeiboCalendarButton.addEventListener("click", function() {
+    kakeiboCalendarInput.value = kakeiboState.selectedMonth;
+    openNativePicker(kakeiboCalendarInput);
+});
+
+kakeiboCalendarInput.addEventListener("change", function() {
+
+    if (!kakeiboCalendarInput.value) {
+        return;
+    }
+
+    kakeiboState.selectedMonth = kakeiboCalendarInput.value;
+    renderKakeibo();
+});
+
+kakeiboIncomeInput.addEventListener("input", function() {
+    getCurrentKakeiboMonthData().income = Number(kakeiboIncomeInput.value) || 0;
+    saveKakeibo();
+    renderKakeibo();
+});
+
+kakeiboSavingsGoalInput.addEventListener("input", function() {
+    getCurrentKakeiboMonthData().savingsGoal = Number(kakeiboSavingsGoalInput.value) || 0;
+    saveKakeibo();
+    renderKakeibo();
+});
+
+kakeiboReflectionInput.addEventListener("input", function() {
+    getCurrentKakeiboMonthData().reflection = kakeiboReflectionInput.value;
+    saveKakeibo();
+});
+
+kakeiboCategoriesContainer.addEventListener("click", function(event) {
+
+    const monthData = getCurrentKakeiboMonthData();
+
+    if (event.target.classList.contains("kakeibo-add-button")) {
+
+        const categoryId = event.target.dataset.category;
+
+        const descInput = kakeiboCategoriesContainer.querySelector(
+            `.kakeibo-desc-input[data-category="${categoryId}"]`
+        );
+        const amountInput = kakeiboCategoriesContainer.querySelector(
+            `.kakeibo-amount-input[data-category="${categoryId}"]`
+        );
+
+        const description = descInput.value.trim();
+        const amount = Number(amountInput.value);
+
+        if (!description || !amount || amount <= 0) {
+            return;
+        }
+
+        monthData.entries.push({
+            id: Date.now(),
+            category: categoryId,
+            description,
+            amount
+        });
+
+        saveKakeibo();
+        renderKakeibo();
+
+        return;
+    }
+
+    if (event.target.classList.contains("tool-list-item-delete")) {
+
+        const id = Number(event.target.dataset.id);
+        monthData.entries = monthData.entries.filter(entry => entry.id !== id);
+
+        saveKakeibo();
+        renderKakeibo();
+    }
+});
+
+
+// =========================================================
+// DIARY
+// =========================================================
+
+const DIARY_STORAGE_KEY = "pomodoro.diary";
+const DIARY_MOODS = ["😊", "🙂", "😐", "🙁", "😢"];
+
+const diaryDateLabel = document.getElementById("diaryDateLabel");
+const diaryPrevDateButton = document.getElementById("diaryPrevDateButton");
+const diaryNextDateButton = document.getElementById("diaryNextDateButton");
+const diaryMoodRow = document.getElementById("diaryMoodRow");
+const diaryTextArea = document.getElementById("diaryTextArea");
+
+let diaryEntries = loadJSON(DIARY_STORAGE_KEY, {});
+
+const diaryState = {
+    selectedDate: getDateKey(new Date())
+};
+
+function renderDiaryMoods(selectedMood) {
+
+    diaryMoodRow.innerHTML = "";
+
+    DIARY_MOODS.forEach(mood => {
+
+        const button = document.createElement("button");
+        button.className = `diary-mood-button ${mood === selectedMood ? "selected" : ""}`;
+        button.textContent = mood;
+        button.dataset.mood = mood;
+
+        diaryMoodRow.appendChild(button);
+    });
+}
+
+function renderDiary() {
+
+    diaryDateLabel.textContent = formatDateLabel(diaryState.selectedDate);
+
+    const entry = diaryEntries[diaryState.selectedDate] || { mood: null, text: "" };
+
+    renderDiaryMoods(entry.mood);
+    diaryTextArea.value = entry.text || "";
+}
+
+function saveDiaryEntry() {
+
+    const existing = diaryEntries[diaryState.selectedDate] || {};
+
+    diaryEntries[diaryState.selectedDate] = {
+        mood: existing.mood || null,
+        text: diaryTextArea.value
+    };
+
+    saveJSON(DIARY_STORAGE_KEY, diaryEntries);
+}
+
+diaryMoodRow.addEventListener("click", function(event) {
+
+    const button = event.target.closest(".diary-mood-button");
+
+    if (!button) {
+        return;
+    }
+
+    const existing = diaryEntries[diaryState.selectedDate] || {};
+
+    diaryEntries[diaryState.selectedDate] = {
+        mood: button.dataset.mood,
+        text: existing.text || ""
+    };
+
+    saveJSON(DIARY_STORAGE_KEY, diaryEntries);
+    renderDiary();
+});
+
+diaryTextArea.addEventListener("input", saveDiaryEntry);
+
+diaryPrevDateButton.addEventListener("click", function() {
+    diaryState.selectedDate = addDays(diaryState.selectedDate, -1);
+    renderDiary();
+});
+
+diaryNextDateButton.addEventListener("click", function() {
+    diaryState.selectedDate = addDays(diaryState.selectedDate, 1);
+    renderDiary();
+});
+
+diaryDateLabel.addEventListener("click", function() {
+    diaryState.selectedDate = getDateKey(new Date());
+    renderDiary();
+});
+
+const openDiaryCalendarButton = document.getElementById("openDiaryCalendarButton");
+const diaryCalendarInput = document.getElementById("diaryCalendarInput");
+
+openDiaryCalendarButton.addEventListener("click", function() {
+    diaryCalendarInput.value = diaryState.selectedDate;
+    openNativePicker(diaryCalendarInput);
+});
+
+diaryCalendarInput.addEventListener("change", function() {
+
+    if (!diaryCalendarInput.value) {
+        return;
+    }
+
+    diaryState.selectedDate = diaryCalendarInput.value;
+    renderDiary();
+});
+
+
+// =========================================================
+// HABIT TRACKER
+// =========================================================
+
+const HABITS_STORAGE_KEY = "pomodoro.habits";
+const HABIT_DAYS_SHOWN = 7;
+
+const habitNameInput = document.getElementById("habitNameInput");
+const addHabitButton = document.getElementById("addHabitButton");
+const habitList = document.getElementById("habitList");
+
+let habits = loadJSON(HABITS_STORAGE_KEY, []);
+
+function saveHabits() {
+    saveJSON(HABITS_STORAGE_KEY, habits);
+}
+
+function getLastNDateKeys(n) {
+
+    const keys = [];
+    let cursor = getDateKey(new Date());
+
+    for (let i = 0; i < n; i++) {
+        keys.unshift(cursor);
+        cursor = addDays(cursor, -1);
+    }
+
+    return keys;
+}
+
+function calculateStreak(habit) {
+
+    let streak = 0;
+    let cursor = getDateKey(new Date());
+
+    while (habit.completedDates.includes(cursor)) {
+        streak++;
+        cursor = addDays(cursor, -1);
+    }
+
+    return streak;
+}
+
+function renderHabits() {
+
+    habitList.innerHTML = "";
+
+    if (habits.length === 0) {
+        habitList.innerHTML = `<p class="tool-list-empty">No habits yet. Add one above. ✅</p>`;
+        return;
+    }
+
+    const dayKeys = getLastNDateKeys(HABIT_DAYS_SHOWN);
+    const todayKey = getDateKey(new Date());
+
+    habits.forEach(habit => {
+
+        const habitElement = document.createElement("div");
+        habitElement.className = "habit-item";
+
+        const dayButtons = dayKeys.map(dayKey => {
+
+            const isDone = habit.completedDates.includes(dayKey);
+            const dayLabel = Number(dayKey.split("-")[2]);
+
+            return `<button class="habit-day ${isDone ? "done" : ""}" data-habit-id="${habit.id}" data-date="${dayKey}">${dayLabel}</button>`;
+        }).join("");
+
+        habitElement.innerHTML = `
+    <div class="habit-item-top">
+        <span class="habit-name">${habit.name}</span>
+        <span class="habit-streak">🔥 ${calculateStreak(habit)} day streak</span>
+        <button class="tool-list-item-delete" data-delete-habit="${habit.id}">🗑️</button>
+    </div>
+    <div class="habit-days">${dayButtons}</div>
+`;
+
+        habitList.appendChild(habitElement);
+    });
+}
+
+addHabitButton.addEventListener("click", function() {
+
+    const name = habitNameInput.value.trim();
+
+    if (!name) {
+        return;
+    }
+
+    habits.push({ id: Date.now(), name, completedDates: [] });
+
+    saveHabits();
+    renderHabits();
+
+    habitNameInput.value = "";
+});
+
+habitList.addEventListener("click", function(event) {
+
+    if (event.target.dataset.deleteHabit) {
+
+        const id = Number(event.target.dataset.deleteHabit);
+        habits = habits.filter(habit => habit.id !== id);
+
+        saveHabits();
+        renderHabits();
+
+        return;
+    }
+
+    if (event.target.classList.contains("habit-day")) {
+
+        const id = Number(event.target.dataset.habitId);
+        const dateKey = event.target.dataset.date;
+
+        const habit = habits.find(h => h.id === id);
+
+        if (!habit) {
+            return;
+        }
+
+        if (habit.completedDates.includes(dateKey)) {
+            habit.completedDates = habit.completedDates.filter(d => d !== dateKey);
+        } else {
+            habit.completedDates.push(dateKey);
+        }
+
+        saveHabits();
+        renderHabits();
+    }
+});
+
+
+// =========================================================
 // INIT
 // =========================================================
 
@@ -1601,6 +2265,11 @@ renderStickyNotes();
 
 populateSettingsInputs();
 setAuthMode("login");
+
+renderExpenses();
+renderKakeibo();
+renderDiary();
+renderHabits();
 
 // Cards are static now — clear out any positions saved from when
 // dragging was previously enabled, so old visitors' cards don't
