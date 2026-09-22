@@ -300,35 +300,6 @@ button {
     position: relative;
 }
 
-.card-drag-handle {
-    position: absolute;
-
-    top: 12px;
-    right: 16px;
-
-    font-size: 15px;
-
-    letter-spacing: 1px;
-
-    color: var(--color-text-muted);
-
-    cursor: grab;
-
-    user-select: none;
-
-    padding: 4px 6px;
-
-    border-radius: 6px;
-}
-
-.card-drag-handle:hover {
-    background: rgba(0, 0, 0, 0.05);
-}
-
-.card-drag-handle:active {
-    cursor: grabbing;
-}
-
 .focus-card {
     display: flex;
 

@@ -1577,96 +1577,6 @@ stickyNotesButton.addEventListener("click", addStickyNote);
 
 
 // =========================================================
-// DRAGGABLE CARDS (Focus + Tasks)
-// =========================================================
-
-function makeCardDraggable(cardElement, storageKey) {
-
-    const handle = cardElement.querySelector(".card-drag-handle");
-
-    if (!handle) {
-        return;
-    }
-
-    let isDragging = false;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    function pinInPlace(x, y, width) {
-
-        cardElement.style.position = "fixed";
-        cardElement.style.left = `${x}px`;
-        cardElement.style.top = `${y}px`;
-        cardElement.style.margin = "0";
-        cardElement.style.zIndex = "50";
-        cardElement.style.width = `${width}px`;
-    }
-
-    try {
-        const saved = JSON.parse(localStorage.getItem(storageKey));
-        if (saved) {
-            pinInPlace(saved.x, saved.y, saved.width);
-        }
-    } catch (error) {
-        // ignore corrupt saved position
-    }
-
-    handle.addEventListener("pointerdown", function(event) {
-
-        isDragging = true;
-
-        const rect = cardElement.getBoundingClientRect();
-
-        pinInPlace(rect.left, rect.top, rect.width);
-
-        offsetX = event.clientX - rect.left;
-        offsetY = event.clientY - rect.top;
-
-        event.preventDefault();
-    });
-
-    document.addEventListener("pointermove", function(event) {
-
-        if (!isDragging) {
-            return;
-        }
-
-        cardElement.style.left = `${event.clientX - offsetX}px`;
-        cardElement.style.top = `${event.clientY - offsetY}px`;
-    });
-
-    document.addEventListener("pointerup", function() {
-
-        if (!isDragging) {
-            return;
-        }
-
-        isDragging = false;
-
-        const rect = cardElement.getBoundingClientRect();
-
-        localStorage.setItem(storageKey, JSON.stringify({
-            x: rect.left,
-            y: rect.top,
-            width: rect.width
-        }));
-    });
-
-    handle.addEventListener("dblclick", function() {
-
-        cardElement.style.position = "";
-        cardElement.style.left = "";
-        cardElement.style.top = "";
-        cardElement.style.margin = "";
-        cardElement.style.zIndex = "";
-        cardElement.style.width = "";
-
-        localStorage.removeItem(storageKey);
-    });
-}
-
-
-// =========================================================
 // INIT
 // =========================================================
 
@@ -1692,5 +1602,8 @@ renderStickyNotes();
 populateSettingsInputs();
 setAuthMode("login");
 
-makeCardDraggable(document.getElementById("focusCard"), "pomodoro.cardPos.focus");
-makeCardDraggable(document.getElementById("tasksCard"), "pomodoro.cardPos.tasks");
+// Cards are static now — clear out any positions saved from when
+// dragging was previously enabled, so old visitors' cards don't
+// appear stuck off in a corner.
+localStorage.removeItem("pomodoro.cardPos.focus");
+localStorage.removeItem("pomodoro.cardPos.tasks");
